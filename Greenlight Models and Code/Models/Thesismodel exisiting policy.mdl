@@ -1,0 +1,2922 @@
+{UTF-8}
+LCOH green hydrogen=
+	LCOH[Green hydrogen]
+	~	Euro/ton
+	~		|
+
+Efficiency[Green hydrogen]=
+	(Cost reduction[Green hydrogen])+((LCOH[Green hydrogen]*"Operation & maintenance costs"\
+		)*Learning by doing[Green hydrogen
+	]) ~~|
+Efficiency[Blue hydrogen]=
+	Innovation*CO2 emissions ~~|
+Efficiency[Grey hydrogen]=
+	0
+	~	Euro/ton/Year
+	~		|
+
+Resource pricing[Green hydrogen]=
+	Electricity consumption*Electrolyser efficiency*((Price change[Electricity]-Technological development\
+		[Electricity])/"MWh/GJ") ~~|
+Resource pricing[Blue hydrogen]=
+	Price change[Natural gas]*Gas consumption[Blue hydrogen] ~~|
+Resource pricing[Grey hydrogen]=
+	CO2 emissions*CO2 price increase+(Price change[Natural gas])*Gas consumption[Grey hydrogen\
+		]
+	~	Euro/(Year*ton)
+	~		|
+
+Increased demand[Hydrogen markets,Hydrogen types]=
+	IF THEN ELSE(Hydrogen demand per market[Hydrogen markets,Hydrogen types]>0,
+	
+	DELAY3(Bottom up demand[Hydrogen types,Hydrogen markets]*Price elasticity of demand[\
+		Hydrogen types]*Hydrogen demand per market[Hydrogen markets,Hydrogen types],
+	
+	Adaptation time),0)
+	~	ton/Year
+	~		|
+
+Decarbonisation of transport[Hydrogen markets,Hydrogen types]=
+	Policy market size adjustment[Hydrogen markets]*Hydrogen demand per market[Hydrogen markets\
+		,Hydrogen types]
+	~	ton/Year
+	~		|
+
+Efficiency of electricity use=
+	Total electricity demand*Efficiency increase
+	~	PJ/Year
+	~		|
+
+Innovation factor[All but hydrogen]=
+	0,0,0,0.03,0.03,0.03
+	~	1/Year
+	~		|
+
+Energy carrier price[All but hydrogen]= INTEG (
+	+Price change[All but hydrogen]-Technological development[All but hydrogen],
+		initial price[All but hydrogen])
+	~	Euro/GJ
+	~		|
+
+Technological development[All but hydrogen]=
+	Energy carrier price[All but hydrogen]*Innovation factor[All but hydrogen]
+	~	Euro/(Year*GJ)
+	~		|
+
+CO2 avoidance[All but hydrogen]=
+	(MIN(Hydrogen emissions correction factor,SUM(Energy substitution[All but hydrogen,Hydrogen markets\
+		!]))+(MAX(Hydrogen emissions correction factor
+	,SUM(Energy substitution[All but hydrogen,Hydrogen markets!]))))*"Emissions/PJ"[All but hydrogen\
+		]
+	~	Mton/Year
+	~		|
+
+Hydrogen demand per market[Hydrogen markets,Hydrogen types]= INTEG (
+	Increased demand[Hydrogen markets,Hydrogen types]+Substitution[Hydrogen markets,Hydrogen types\
+		]+Substitution from other energy
+	[Hydrogen markets,Hydrogen types]-Decarbonisation of transport[Hydrogen markets,Hydrogen types\
+		],
+		Initial demand distribution[Hydrogen types,Hydrogen markets])
+	~	ton
+	~		|
+
+Progression rate=
+	LOG("100%"+Growth factor[Green hydrogen]*year,Log factor)
+	~	Dmnl
+	~		|
+
+Dimension factor=
+	1
+	~	1/ton
+	~		|
+
+"Emissions/PJ"[All but hydrogen]=
+	Emission factors[All but hydrogen]*"GJ/PJ"/Mton
+	~	Mton/PJ
+	~		|
+
+Hydrogen industry CO2 savings=
+	((
+	MIN("Mton/year",SUM(Substitution[Hydrogen markets!,Grey hydrogen]))+
+	MAX("Mton/year",SUM(Substitution[Hydrogen markets!,Grey hydrogen])))*CO2 emissions/Mton\
+		)
+	~	Mton/Year
+	~		|
+
+"Mton/year"=
+	1
+	~	ton/Year
+	~		|
+
+Learning by doing[Green hydrogen]=
+	((Hydrogen production capacity[Green hydrogen]*Dimension factor)^Relative elasticity\
+		)*(EXP(Disturbance)) ~~|
+Learning by doing[Blue hydrogen]=
+	0 ~~|
+Learning by doing[Grey hydrogen]=
+	0
+	~	1/Year
+	~		|
+
+Industrial Electricity demand increase=
+	Industrial electricity demand cange+Additional E demand from electrolysis
+	~	PJ/Year
+	~		|
+
+Initial CO2 saving=
+	0
+	~	Mton
+	~		|
+
+Initial LCOH[Green hydrogen]=
+	(Initial electricity price*Electricity consumption*Innitial efficiency)+Initial CAPEX\
+		[Green hydrogen]+"O&M costs" ~~|
+Initial LCOH[Blue hydrogen]=
+	CO2 emissions*Operational costs carbon capture+"Gas price/GJ"*Gas consumption[Blue hydrogen\
+		]+Initial CAPEX[Blue hydrogen
+	] ~~|
+Initial LCOH[Grey hydrogen]=
+	"Gas price/GJ"*Gas consumption[Grey hydrogen]+Initial CAPEX[Grey hydrogen]+CO2 emissions\
+		*Initial ETS
+	~	Euro/ton
+	~		|
+
+Project development[Hydrogen types]=
+	Project lineup[Hydrogen types]/Project timeline[Hydrogen types,Engineering]
+	~	ton/Year
+	~		|
+
+"100%"=
+	1
+	~	Dmnl
+	~		|
+
+Investment decisions[Hydrogen types]=
+	MIN(Potential project[Hydrogen types],Project in development[Hydrogen types])
+	~	ton
+	~		|
+
+"Price increase %"[All but hydrogen]=
+	Price change[All but hydrogen]/Energy carrier price[All but hydrogen]/Unit conversion
+	~	Dmnl
+	~		|
+
+Industrial CO2 savings with green hydrogen= INTEG (
+	ABS(SUM(CO2 avoidance[All but hydrogen!])+Hydrogen industry CO2 savings),
+		Initial CO2 saving)
+	~	Mton
+	~		|
+
+Project Commissioning[Hydrogen types]=
+	Under construction[Hydrogen types]/Project timeline[Hydrogen types,Engineering
+	]
+	~	ton/Year
+	~		|
+
+"SDE++"[Clean hydrogen]= INTEG (
+	-"SDE++ funding"[Clean hydrogen]-SDE allocated to different projects,
+		"SDE++ fund"*Million)
+	~	Euro
+	~		|
+
+Log factor=
+	2
+	~	Dmnl
+	~		|
+
+Additional E demand from electrolysis=
+	IF THEN ELSE("% renewable">0.9,Procured RES*"MWh/MW"/"MWh/PJ",0)
+	~	PJ/Year
+	~		|
+
+Investments[Green hydrogen]=
+	MIN((Max capacity with additionality/Unit conversion/(Project timeline[Green hydrogen\
+		,Financing]+Project timeline
+	[Green hydrogen,Permitting])),Investment decisions[Green hydrogen]/(Project timeline\
+		[Green hydrogen,Financing]+Project timeline
+	[Green hydrogen,Permitting])) ~~|
+Investments[Blue hydrogen]=
+	Investment decisions[Blue hydrogen]/(Project timeline[Blue hydrogen,Financing]+Project timeline
+	[Blue hydrogen,Permitting]) ~~|
+Investments[Grey hydrogen]=
+	Investment decisions[Grey hydrogen]/(Project timeline[Grey hydrogen,Financing]+Project timeline
+	[Grey hydrogen,Permitting])
+	~	ton/Year
+	~		|
+
+Max capacity with additionality=
+	IF THEN ELSE(additionality requirement=1,Procured RES*"tpa/MW",(Installed RES capacity\
+		-MW installed/Wind factor)
+	*"tpa/MW"*Unit conversion)
+	~	ton/Year
+	~		|
+
+Unit conversion=
+	1
+	~	1/Year
+	~		|
+
+CAPEX support= INTEG (
+	-Allocated to other projects-Funding,
+		Initial ICPEI funds*Million)
+	~	Euro
+	~		|
+
+Disturbance=
+	Progression rate
+	~	1
+	~		|
+
+Hydrogen emissions correction factor=
+	1
+	~	PJ/Year
+	~		|
+
+Electricity production emissions=
+	"% fossil electricity"*"GJ/PJ"*Grid factor*Total electricity demand
+	~	ton
+	~		|
+
+"% fossil electricity"=
+	MAX(0,1-"% renewable")
+	~	Dmnl
+	~		|
+
+Decarbonisation[All but hydrogen,Hydrogen markets]=
+	Total demand energy carriers[All but hydrogen,Hydrogen markets]*(Policy market size adjustment\
+		[Hydrogen markets]+Efficiency increase
+	)
+	~	PJ/Year
+	~		|
+
+Non hydrogen emissions[All but hydrogen]=
+	Emission factors[All but hydrogen]*SUM(Total demand energy carriers[All but hydrogen\
+		,Hydrogen markets!])*"GJ/PJ"+Electricity production emissions
+	~	ton
+	~		|
+
+Grid factor=
+	0.133
+	~	ton/GJ
+	~		|
+
+"t-1"=
+	DELAY3I(Plant scale, year , Plant scale)
+	~	MW
+	~		|
+
+Electricity production capacity required=
+	(Total electricity demand*"MWh/PJ"/"MWh/MW")
+	~	MW
+	~		|
+
+Total electricity demand= INTEG (
+	Industrial Electricity demand increase+New electricity demand-Efficiency of electricity use\
+		,
+		Initial power demand)
+	~	PJ
+	~		|
+
+Efficiency increase=
+	0.03
+	~	1/Year
+	~		|
+
+"% renewable"=
+	(Installed RES capacity*Wind factor)/Electricity production capacity required
+	~	Dmnl
+	~		|
+
+Excess RES=
+	IF THEN ELSE(Switch combined tendering=0,MAX(0,MIN(Roadmap WOZ,Surplus RES
+	))*Wind factor,Share RES allocated to H2*Roadmap WOZ)
+	~	MW/Year
+	~		|
+
+Total electricity demand increase=
+	((Industrial Electricity demand increase+New electricity demand)*"MWh/PJ"/"MWh/MW"+(\
+		To decarbonize/Climate agreement timeframe))/Wind factor
+	~	MW/Year
+	~		|
+
+New electricity demand=
+	Current domestic electricity demand*Domestic electrification*LN(Electrification of domestic gas use\
+		/Current domestic electricity demand
+	)
+	~	PJ/Year
+	~		|
+
+"MWh/MW"=
+	3600
+	~	MWh/MW
+	~		|
+
+To decarbonize=
+	Electricity production capacity required*(1-"% renewable")
+	~	MW
+	~		|
+
+Gas consumption[Hydrogen types]=
+	Energy content hydrogen/SMR efficiency
+	~	GJ/ton
+	~		|
+
+Surplus RES=
+	MAX(0,New RES-Total electricity demand increase)
+	~	MW/Year
+	~		|
+
+New RES=
+	Roadmap WOZ+Installed RES capacity*(Onshore RES increase+Other additional renewables\
+		)*LN(Electricity production capacity required/(Installed RES capacity*Wind factor))
+	~	MW/Year
+	~		|
+
+Climate agreement timeframe=
+	30
+	~	Year
+	~		|
+
+Roadmap WOZ=
+	1000
+	~	MW/Year
+	~		|
+
+year=
+	1
+	~	Year
+	~		|
+
+Project initiation[Hydrogen types]=
+	Potential project[Hydrogen types]*Unit conversion
+	~	ton/Year
+	~		|
+
+"MWh/PJ"=
+	278000
+	~	MWh/PJ
+	~		|
+
+CCS retrofit[Grey hydrogen]=
+	IF THEN ELSE(Hydrogen production capacity[Grey hydrogen]>0,-Capacity deficit[Blue hydrogen\
+		]/Retrofit uncertainty,0) ~~|
+CCS retrofit[Blue hydrogen]=
+	IF THEN ELSE(Hydrogen production capacity[Grey hydrogen]>0,Capacity deficit[Blue hydrogen\
+		]/Retrofit uncertainty,0) ~~|
+CCS retrofit[Green hydrogen]=
+	0
+	~	ton/Year
+	~		|
+
+"1/year"=
+	1
+	~	Euro/ton/Year
+	~		|
+
+CO2 emissions industry=
+	Total CO2 emissions/Mton
+	~	Mton
+	~		|
+
+Million=
+	1e+06
+	~	Euro/Meuro
+	~		|
+
+Mton=
+	1e+06
+	~	ton/Mton
+	~		|
+
+SDE allocated to different projects=
+	Allocation key SDE*"SDE++"[Green hydrogen]
+	~	Euro/Year
+	~		|
+
+Procured RES=
+	DELAY3(MAX(0,IF THEN ELSE(Potetial H2 capacity>RES per electrolyser,MIN(RES demand,Potetial H2 capacity\
+		),0))*Full load hours,Project timeline
+	[Green hydrogen,Financing
+	])
+	~	MW/Year
+	~		|
+
+"MWh/GJ"=
+	0.278
+	~	MWh/GJ
+	~		|
+
+Total subsidies=
+	(Initial ICPEI funds+"SDE++ fund")
+	~	Meuro
+	~		|
+
+Scale factor=
+	(Relative scale up^Scaling factor)/(Initial CAPEX[Green hydrogen]/"1/year")
+	~	1/Year
+	~		|
+
+Allocated to other projects=
+	CAPEX support*Allocation key
+	~	Euro/Year
+	~		|
+
+Allocation key=
+	0.02
+	~	1/Year
+	~		|
+
+Allocation key SDE=
+	0.02
+	~	1/Year
+	~		|
+
+Full load hours=
+	0.5
+	~	1/Year
+	~		|
+
+RES per electrolyser=
+	Plant scale
+	~	MW
+	~		|
+
+RES secured for electrolysis=
+	0.2
+	~	Dmnl
+	~		|
+
+Other additional renewables=
+	0.02
+	~	1/Year
+	~		|
+
+RES demand=
+	Project in development[Green hydrogen]/"tpa/MW"
+	~	MW
+	~		|
+
+Min CAPEX=
+	1000
+	~	Euro/ton
+	~		|
+
+Blue hydrogen net cost[Blue hydrogen,Hydrogen markets]=
+	LCOH[Blue hydrogen]-Clean hydrogen cost reduction[Blue hydrogen]
+	~	Euro/ton
+	~		|
+
+adaptive policy=
+	IF THEN ELSE(Adaptive policy refineries switch>0,IF THEN ELSE(LCOH[Green hydrogen]>LCOH\
+		[Blue hydrogen],1,0),0)
+	~	1
+	~		|
+
+Adaptive policy refineries switch=
+	0
+	~	Dmnl
+	~		|
+
+additionality requirement=
+	IF THEN ELSE("% renewable"<RES threshold,1,0)
+	~	1
+	~		|
+
+Initial power demand=
+	SUM(Initial energy demand[Electricity,Hydrogen markets!])+Initial other electricity demand
+	~	PJ
+	~		|
+
+Energy demand change[All but hydrogen,Hydrogen markets]=
+	DELAY3("Price increase %"[All but hydrogen]*Energy carrier demand elasticity*Total demand energy carriers
+	[All but hydrogen,Hydrogen markets]+percentual GDP growth*Total demand energy carriers\
+		[All but hydrogen,Hydrogen markets
+	],Market reaction delay)
+	~	PJ/Year
+	~		|
+
+Current domestic electricity demand=
+	Total electricity demand-SUM(Total demand energy carriers[Electricity,Hydrogen markets\
+		!])
+	~	PJ
+	~		|
+
+excess projects[Hydrogen types]=
+	MAX(0,Project lineup[Hydrogen types]-Potential project[Hydrogen types])
+	~	ton
+	~		|
+
+Initial other electricity demand=
+	250
+	~	PJ
+	~		|
+
+Cancelled projects[Hydrogen types]=
+	(Project in development[Hydrogen types]-Investment decisions[Hydrogen types])/Total development time\
+		[Hydrogen types]
+	~	ton/Year
+	~		|
+
+Hydrogen fuel premium=
+	PULSE(2020, Premium duration)*(Fuel multiplier[Green hydrogen]*Renewable fuel premium\
+		*Energy content[Green hydrogen
+	])
+	~	Euro/ton
+	~		|
+
+"SDE++ funding"[Clean hydrogen]=
+	IF THEN ELSE("SDE++"[Clean hydrogen]>0,Investments[Clean hydrogen]*CO2 emissions*Subsidy intensity\
+		[Clean hydrogen],0)
+	~	Euro/Year
+	~		|
+
+Clean hydrogen:
+	Blue hydrogen,Green hydrogen
+	~	
+	~		|
+
+Clean hydrogen cost reduction[Clean hydrogen]=
+	IF THEN ELSE("SDE++ funding"[Clean hydrogen]>0,CO2 emissions*Subsidy intensity[Clean hydrogen\
+		],0)
+	~	Euro/ton
+	~		|
+
+Market value creation[Hydrogen markets]=
+	1,0,0,0,0,0
+	~	Dmnl
+	~		|
+
+Green hydrogen value[Industry]=
+	First adopter value green[Industry]+(Market value creation[Industry]*Energy content[\
+		Green hydrogen]*Renewable fuel premium)*adaptive policy ~~|
+Green hydrogen value[Transport]=
+	First adopter value green[Transport]+Hydrogen fuel premium-Compression costs
+	~	Euro/ton
+	~		|
+
+Electrification of domestic gas use=
+	400
+	~	PJ
+	~		|
+
+gross CO2 avoidance costs[Clean hydrogen]=
+	Funding gap[Clean hydrogen]/CO2 emissions
+	~	Euro/ton
+	~		|
+
+Compression costs=
+	2000
+	~	Euro/ton
+	~		|
+
+Subsidy intensity[Clean hydrogen]=
+	MAX(0,(MIN(net CO2 avoidance cost[Clean hydrogen],400)))
+	~	Euro/ton
+	~		|
+
+Domestic electrification=
+	0.05
+	~	1/Year
+	~		|
+
+Cost reduction[Green hydrogen]=
+	DELAY3((CAPEX cost[Green hydrogen]*(Scale factor-Economies of scale[Green hydrogen])\
+		)*LN(CAPEX cost[Green hydrogen]/Min CAPEX),Project timeline[Green hydrogen,Engineering
+	]) ~~|
+Cost reduction[Blue hydrogen]=
+	0 ~~|
+Cost reduction[Grey hydrogen]=
+	0
+	~	Euro/ton/Year
+	~		|
+
+net CO2 avoidance cost[Clean hydrogen]=
+	gross CO2 avoidance costs[Clean hydrogen]-EU ETS price
+	~	Euro/ton
+	~		|
+
+Premium duration=
+	10
+	~	Year
+	~		|
+
+Switch combined tendering=
+	0
+	~	Dmnl
+	~		|
+
+Terminated projects[Hydrogen types]=
+	excess projects[Hydrogen types]/Total development time[Hydrogen types]
+	~	ton/Year
+	~		|
+
+Total demand energy carriers[All but hydrogen,Hydrogen markets]= INTEG (
+	Energy demand change[All but hydrogen,Hydrogen markets]-Energy substitution[All but hydrogen\
+		,Hydrogen markets]-Decarbonisation
+[All but hydrogen,Hydrogen markets],
+		Initial energy demand[All but hydrogen,Hydrogen markets])
+	~	PJ
+	~		|
+
+Policy market size adjustment[Hydrogen markets]=
+	0.01,0,-0.01,0,-0.01,-0.01
+	~	1/Year
+	~		|
+
+Share RES allocated to H2=
+	0
+	~	1
+	~		|
+
+hydrogen emissions=
+	MIN(Hydrogen production capacity[Grey hydrogen],Hydrogen type demand[Grey hydrogen])\
+		*CO2 emissions
+	~	ton
+	~		|
+
+Energy carrier substitution[Industry,Conventional feedstock]=
+	Industrial energy substitution factor[Conventional feedstock,Industry] ~~|
+Energy carrier substitution[Industry,Conventional transport fuels]=
+	0 ~~|
+Energy carrier substitution[Transport,Conventional transport fuels]=
+	Transport fuel substitution factor[Conventional transport fuels] ~~|
+Energy carrier substitution[Transport,Conventional feedstock]=
+	0
+	~	1/Year
+	~		|
+
+Demand growth[Hydrogen types]=
+	SUM(Increased demand[Hydrogen markets!,Hydrogen types])+SUM(Substitution[Hydrogen markets\
+		!,Hydrogen types])+SUM(Substitution from other energy[Hydrogen markets!,Hydrogen types\
+		])
+	~	ton/Year
+	~		|
+
+Energy substitution[All but hydrogen,Hydrogen markets]=
+	DELAY3(Energy carrier substitution[Hydrogen markets,All but hydrogen]*Total demand energy carriers\
+		[All but hydrogen,Hydrogen markets
+	],Substitution delay)
+	~	PJ/Year
+	~		|
+
+hydrogen substitution from other energy[Industry,Hydrogen types]=
+	MAX(0,Industrial energy substitution factor[Hydrogen types,Industry]) ~~|
+hydrogen substitution from other energy[Transport,Hydrogen types]=
+	Transport fuel substitution factor[Hydrogen types]
+	~	Dmnl/Year
+	~		|
+
+delay=
+	1
+	~	Year
+	~		|
+
+CO2 elasticity=
+	0.5
+	~	1/Year
+	~		|
+
+Total CO2 emissions=
+	hydrogen emissions+SUM(Non hydrogen emissions[Conventional feedstock!])
+	~	ton
+	~		|
+
+Industrial electricity demand cange=
+	SUM(Energy demand change[Electricity,Hydrogen markets!])+SUM(Energy substitution[Electricity\
+		,Hydrogen markets!])
+	~	PJ/Year
+	~		|
+
+Emissions before= DELAY FIXED (
+	Total CO2 emissions, delay, Total CO2 emissions)
+	~	ton
+	~		|
+
+Industrial energy substitution factor[Industrial feedstock,Industry]=
+	(Average industrial energy price[Industry]-Industrial feedstock cost[Industrial feedstock\
+		,Industry])/Average industrial energy price
+	[Industry]*Industrial energy demand shares[Industry,Industrial feedstock]*Industrial energy substitution rate
+	~	1/Year
+	~		|
+
+CO2 price increase=
+	DELAY3(EU ETS price*((ETS cap reduction factor+emission delta*CO2 elasticity)),CO2 price delay\
+		)
+	~	Euro/(ton*Year)
+	~		|
+
+"GJ/PJ"=
+	1e+06
+	~	GJ/PJ
+	~		|
+
+emission delta=
+	(Total CO2 emissions-Emissions before)/Total CO2 emissions
+	~	1
+	~		|
+
+Substitution from other energy[Hydrogen markets,Hydrogen types]=
+	DELAY3(Hydrogen demand per market[Hydrogen markets,Hydrogen types]*hydrogen substitution from other energy\
+		[Hydrogen markets,Hydrogen types
+	],Substitution delay)
+	~	ton/Year
+	~		|
+
+Short term demand[All but hydrogen]=
+	DELAY1I(SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!]) , short term\
+		 ,
+	SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!]))
+	~	PJ
+	~		|
+
+Short term price development[All but hydrogen]=
+	ZIDZ((SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!])-Short term demand\
+		[All but hydrogen]),(SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets\
+		!])))
+	~	1
+	~		|
+
+"Hydrogen GJ/ton"=
+	130
+	~	GJ/ton
+	~		|
+
+Conventional feedstock:
+	Coal,Natural gas
+	~	
+	~		|
+
+Conventional transport fuel demand[Conventional transport fuels]=
+	Total demand energy carriers[Conventional transport fuels,Transport]
+	~	PJ
+	~		|
+
+Conventional transport fuels:
+	Oil,Electricity,Biofuels,Efuels
+	~	
+	~		|
+
+"Hydrogen ton/PJ"=
+	7692
+	~	ton/PJ
+	~		|
+
+Hydrogen transport demand[Hydrogen types]=
+	Hydrogen demand per market[Transport,Hydrogen types]/"Hydrogen ton/PJ"
+	~	PJ
+	~		|
+
+Average industrial energy price[Industry]=
+	SUM(Industrial feedstock cost vector[Industrial feedstock!,Industry])
+	~	Euro/GJ
+	~		|
+
+Transport fuel demand shares[All transport fuels]=
+	Total transport fuel demand[All transport fuels]/SUM(Total transport fuel demand[All transport fuels\
+		!])
+	~	Dmnl
+	~		|
+
+average transport fuel cost=
+	SUM(Transport cost vector[All transport fuels!])
+	~	Euro/GJ
+	~		|
+
+Transport fuel substitution rate=
+	0.1
+	~	1/Year
+	~		|
+
+Industrial energy demand[Conventional feedstock,Industry]=
+	Total demand energy carriers[Conventional feedstock,Industry]
+	~	PJ
+	~		|
+
+Industrial energy demand shares[Industry,Industrial feedstock]=
+	total industrial energy demand[Industrial feedstock,Industry]/SUM(total industrial energy demand\
+		[Industrial feedstock!,Industry])
+	~	Dmnl
+	~		|
+
+Industrial energy substitution rate=
+	0.1
+	~	1/Year
+	~		|
+
+total industrial energy demand[Conventional feedstock,Industry]=
+	Industrial energy demand[Conventional feedstock,Industry] ~~|
+total industrial energy demand[Hydrogen types,Industry]=
+	Hydrogen industry demand[Industry,Hydrogen types]
+	~	PJ
+	~		|
+
+Long term=
+	1/12
+	~	Year
+	~		|
+
+Long term demand[All but hydrogen]=
+	DELAY1I(SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!]), Long term\
+		,SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!]))
+	~	PJ
+	~		|
+
+Long term price development[All but hydrogen]=
+	ZIDZ((SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets!])-Long term demand\
+		[All but hydrogen]),(SUM(Total demand energy carriers[All but hydrogen,Hydrogen markets\
+		!])))
+	~	Dmnl
+	~		|
+
+Long term price effect=
+	0.3
+	~	1/Year
+	~		|
+
+Transport cost[Conventional transport fuels]=
+	Energy carrier price[Conventional transport fuels] ~~|
+Transport cost[Hydrogen types]=
+	Net Cost[Transport,Hydrogen types]/"Hydrogen GJ/ton"
+	~	Euro/GJ
+	~		|
+
+Transport cost vector[All transport fuels]=
+	Transport cost[All transport fuels]*Transport fuel demand shares[All transport fuels\
+		]
+	~	Euro/GJ
+	~		|
+
+Industrial feedstock cost vector[Industrial feedstock,Industry]=
+	Industrial energy demand shares[Industry,Industrial feedstock]*Industrial feedstock cost\
+		[Industrial feedstock,Industry]
+	~	Euro/GJ
+	~		|
+
+Transport fuel substitution factor[All transport fuels]=
+	(average transport fuel cost-Transport cost[All transport fuels])/average transport fuel cost\
+		*Transport fuel demand shares[All transport fuels]*Transport fuel substitution rate
+	~	1/Year
+	~		|
+
+Hydrogen industry demand[Industry,Hydrogen types]=
+	Hydrogen demand per market[Industry,Hydrogen types]/"Hydrogen ton/PJ"
+	~	PJ
+	~		|
+
+Industrial feedstock cost[Conventional feedstock,Industry]=
+	Energy carrier price[Conventional feedstock] ~~|
+Industrial feedstock cost[Hydrogen types,Industry]=
+	Net Cost[Industry,Hydrogen types]/"Hydrogen GJ/ton"
+	~	Euro/GJ
+	~		|
+
+short term=
+	1/52
+	~	Year
+	~		|
+
+Total transport fuel demand[Conventional transport fuels]=
+	Conventional transport fuel demand[Conventional transport fuels] ~~|
+Total transport fuel demand[Hydrogen types]=
+	Hydrogen transport demand[Hydrogen types]
+	~	PJ
+	~		|
+
+Price change[All but hydrogen]=
+	DELAY3(CO2 price increase*Emission factors[All but hydrogen]+(((Long term price development\
+		[All but hydrogen]*Long term price effect)+(Short term price development[All but hydrogen\
+		]*Short term price effect))*Energy carrier price[All but hydrogen]),Price adaptation delay\
+		)
+	~	Euro/GJ/Year
+	~		|
+
+Short term price effect=
+	0.3
+	~	1/Year
+	~		|
+
+Industry:
+	Refineries,Ammonia,Methanol,Steel,Synthetic fuels
+	~	
+	~		|
+
+Price adaptation delay=
+	0.5
+	~	Year
+	~		|
+
+Emission factors[All but hydrogen]=
+	0.104,0.05,0.07,0,0,0
+	~	ton/GJ
+	~		|
+
+Energy carrier demand elasticity=
+	-0.5
+	~	1/Year
+	~		|
+
+initial price[Coal]=
+	"Coal price/GJ" ~~|
+initial price[Natural gas]=
+	"Gas price/GJ" ~~|
+initial price[Oil]=
+	"Oil price/GJ" ~~|
+initial price[Electricity]=
+	"Electricity price/GJ" ~~|
+initial price[Biofuels]=
+	"Biofuel price/GJ" ~~|
+initial price[Efuels]=
+	"Efuel price/GJ"
+	~	Euro/GJ
+	~		|
+
+Energy content[Energy types]=
+	130,130,130,24,54,45.5,0,45.5,45.5
+	~	GJ/ton
+	~		|
+
+Market reaction delay=
+	1
+	~	Year
+	~		|
+
+Barrel of oil equivalent=
+	0.1359
+	~	ton/barrel
+	~		|
+
+Efuel price=
+	2500
+	~	Euro/ton
+	~		|
+
+Biofuel price=
+	2000
+	~	Euro/ton
+	~		|
+
+"Biofuel price/GJ"=
+	Biofuel price/Energy content[Biofuels]-(Fuel multiplier[Biofuels]*Renewable fuel premium\
+		)
+	~	Euro/GJ
+	~		|
+
+"Gas price/GJ"=
+	Initial gas price*"MWh/GJ"+(Initial ETS*Emission factors[Natural gas])
+	~	Euro/GJ
+	~		|
+
+Fuel multiplier[All transport fuels]=
+	0,0,2.5,0,5,1.5,2
+	~	Dmnl
+	~		|
+
+Renewable fuel premium=
+	15
+	~	Euro/GJ
+	~		|
+
+"Oil price/GJ"=
+	Oil price/Barrel of oil equivalent/Energy content[Oil]
+	~	Euro/GJ
+	~		|
+
+"Efuel price/GJ"=
+	Efuel price/Energy content[Efuels]-(Fuel multiplier[Efuels]*Renewable fuel premium)
+	~	Euro/GJ
+	~		|
+
+Coal price=
+	100
+	~	Euro/ton
+	~		|
+
+"Coal price/GJ"=
+	Coal price/Energy content[Coal]+(Emission factors[Coal]*Initial ETS)
+	~	Euro/GJ
+	~		|
+
+"Electricity price/GJ"=
+	Initial electricity price*"MWh/GJ"
+	~	Euro/GJ
+	~		|
+
+Oil price=
+	100
+	~	Euro/barrel
+	~		|
+
+Biofuel demand[Biofuels, Hydrogen markets]=
+	0,0,17,24,0,0
+	~	PJ
+	~		|
+
+Coal demand[Coal, Hydrogen markets]=
+	0,0,0,0,88.2,0
+	~	PJ
+	~		|
+
+Efuels demand[Efuels, Hydrogen markets]=
+	0,0,0,1,0,0
+	~	PJ
+	~		|
+
+Initial energy demand[Oil, Hydrogen markets]=
+	Oil demand[Oil,Hydrogen markets] ~~|
+Initial energy demand[Coal,Hydrogen markets]=
+	Coal demand[Coal,Hydrogen markets] ~~|
+Initial energy demand[Natural gas,Hydrogen markets]=
+	Natural gas demand[Natural gas,Hydrogen markets] ~~|
+Initial energy demand[Electricity,Hydrogen markets]=
+	Industrial electricity demand[Electricity,Hydrogen markets] ~~|
+Initial energy demand[Biofuels,Hydrogen markets]=
+	Biofuel demand[Biofuels,Hydrogen markets] ~~|
+Initial energy demand[Efuels,Hydrogen markets]=
+	Efuels demand[Efuels,Hydrogen markets]
+	~	PJ
+	~		|
+
+All but hydrogen:
+	Coal,Natural gas,Oil,Electricity,Biofuels,Efuels
+	~	
+	~		|
+
+Natural gas demand[Natural gas,Hydrogen markets]=
+	45,84.3,58.2,3.3,11.4,0
+	~	PJ
+	~		|
+
+Oil demand[Oil, Hydrogen markets]=
+	124.3,0,0,384.1,0,0
+	~	PJ
+	~		|
+
+Industrial electricity demand[Electricity,Hydrogen markets]=
+	0,0,12.9,3.9,11.4,0
+	~	PJ
+	~		|
+
+All transport fuels:
+	Grey hydrogen,Blue hydrogen,Green hydrogen,Oil,Electricity,Biofuels,Efuels
+	~	
+	~		|
+
+Hydrogen types:
+	Grey hydrogen, Blue hydrogen, Green hydrogen
+	~	
+	~		|
+
+Industrial feedstock:
+	Grey hydrogen,Blue hydrogen,Green hydrogen,Coal,Natural gas
+	~	
+	~		|
+
+Relative scale up=
+	Plant scale/"t-1"
+	~	Dmnl
+	~		|
+
+NG market delay=
+	2
+	~	Year
+	~		|
+
+Gas cost developments=
+	DELAY3(natural gas price*(percentual GDP growth+Natural gas price development),NG market delay\
+		)
+	~	Euro/(Year*MWh)
+	~		|
+
+CO2 price delay=
+	3
+	~	Year
+	~		|
+
+Green hydrogen net cost[Hydrogen markets]=
+	MAX(1000,IF THEN ELSE(CAPEX support>0,
+	LCOH[Green hydrogen]-Clean hydrogen cost reduction[Green hydrogen]-Green hydrogen value\
+		[Hydrogen markets]-(CAPEX cost[Green hydrogen]*"% CAPEX support"),
+	LCOH[Green hydrogen]-Green hydrogen value[Hydrogen markets]-Clean hydrogen cost reduction\
+		[Green hydrogen]))
+	~	Euro/ton
+	~		|
+
+Funding gap[Clean hydrogen]=
+	LCOH[Clean hydrogen]-LCOH[Grey hydrogen]
+	~	Euro/ton
+	~		|
+
+"SDE++ fund"=
+	800
+	~	Meuro
+	~		|
+
+Price development=
+	Electricity Price*(electricity price development+percentual GDP growth)
+	~	Euro/(Year*MWh)
+	~		|
+
+GDP growth=
+	(1+growth)*Average GDP growth*GDP
+	~	Euro/Year
+	~		|
+
+business cycle=
+	5
+	~	Year
+	~		|
+
+pi=
+	3.14
+	~	Dmnl
+	~		|
+
+GDP= INTEG (
+	GDP growth,
+		8.56356e+11)
+	~	Euro
+	~		|
+
+growth=
+	SIN(pi*Time/business cycle)
+	~	1
+	~		|
+
+percentual GDP growth=
+	GDP growth/GDP
+	~	1/Year
+	~		|
+
+"Operation & maintenance costs"=
+	0.1
+	~	Dmnl
+	~		|
+
+"O&M costs"=
+	"Operation & maintenance costs"*Initial CAPEX[Green hydrogen]
+	~	Euro/ton
+	~		|
+
+Scale up=
+	DELAY3(Growth factor[Green hydrogen]*Plant scale*LN(Max capacity/Plant scale),Project timeline\
+		[Green hydrogen,Engineering])
+	~	MW/Year
+	~		|
+
+Total development time[Hydrogen types]=
+	SUM(Project timeline[Hydrogen types,Project realisation!])
+	~	Year
+	~		|
+
+Project in development[Hydrogen types]= INTEG (
+	Project development[Hydrogen types]-Cancelled projects[Hydrogen types]-Investments[Hydrogen types\
+		]-Cancelled projects[Hydrogen types],
+		initial development[Hydrogen types])
+	~	ton
+	~		|
+
+Project timeline[Hydrogen types,Project realisation]= INTEG (
+	-Learning curve[Project realisation,Hydrogen types],
+		Initial project realisation time[Project realisation,Hydrogen types])
+	~	Year
+	~		|
+
+Learning curve[Permitting,Hydrogen types]=
+	Project timeline[Hydrogen types,Permitting]*Learning by doing[Hydrogen types] ~~|
+Learning curve[Engineering,Hydrogen types]=
+	Project timeline[Hydrogen types,Engineering]*(Learning by doing[Hydrogen types]-Economies of scale\
+		[Hydrogen types]) ~~|
+Learning curve[Construction,Hydrogen types]=
+	Project timeline[Hydrogen types,Construction]*(Learning by doing[Hydrogen types]) ~~|
+Learning curve[Financing,Hydrogen types]=
+	Project timeline[Hydrogen types,Financing]*Learning by doing[Hydrogen types]
+	~	Year/Year
+	~		|
+
+Initial project realisation time[Permitting,Hydrogen types]=
+	1,1,2 ~~|
+Initial project realisation time[Engineering,Hydrogen types]=
+	1,1,2 ~~|
+Initial project realisation time[Construction,Hydrogen types]=
+	2,2,2 ~~|
+Initial project realisation time[Financing,Hydrogen types]=
+	1,1,2
+	~	Year
+	~		|
+
+Project realisation:
+	Permitting, Engineering, Construction, Financing
+	~	Year
+	~		|
+
+Initial demand[Hydrogen types]=
+	Total project pipeline[Hydrogen types]
+	~	ton
+	~		|
+
+Substitution[Hydrogen markets,Hydrogen types]=
+	IF THEN ELSE(Hydrogen demand per market[Hydrogen markets,Hydrogen types]>0,
+	
+	DELAY3(Substitution factor[Hydrogen types,Hydrogen markets]*Total hydrogen demand[Hydrogen markets\
+		],Substitution delay)
+	,0)
+	~	ton/Year
+	~		|
+
+Hydrogen type demand[Hydrogen types]= INTEG (
+	Demand growth[Hydrogen types],
+		Initial demand[Hydrogen types])
+	~	ton
+	~		|
+
+"% CAPEX support"=
+	0.5
+	~	Dmnl
+	~		|
+
+Supported projects=
+	Investments[Green hydrogen]
+	~	ton/Year
+	~		|
+
+Funding=
+	IF THEN ELSE(CAPEX support>0,Supported projects*"% CAPEX support"*CAPEX cost[Green hydrogen\
+		],0)
+	~	Euro/Year
+	~		|
+
+Bottom up demand[Hydrogen types,Hydrogen markets]=
+	(Resource pricing[Hydrogen types]-Efficiency[Hydrogen types])/Net Cost[Hydrogen markets\
+		,Hydrogen types]
+	~	1/Year
+	~		|
+
+initial development[Hydrogen types]=
+	0,10000,100000
+	~	ton
+	~		|
+
+Initial demand distribution[Hydrogen types,Hydrogen markets]=
+	Total project pipeline[Hydrogen types]/SUM(Total project pipeline[Hydrogen types!])*\
+		"2020 hydrogen demand"
+	[Hydrogen markets]
+	~	ton
+	~		|
+
+Total project pipeline[Hydrogen types]=
+	Initial construction[Hydrogen types]+initial development[Hydrogen types]+Initial hydrogen production capacity\
+		[Hydrogen types]+Initial projects[Hydrogen types]
+	~	ton
+	~		|
+
+Initial ICPEI funds=
+	800
+	~	Meuro
+	~		|
+
+Substitution factor[Hydrogen types,Hydrogen markets]=
+	(Average price[Hydrogen markets]-Net Cost[Hydrogen markets,Hydrogen types])/Average price\
+		[Hydrogen markets]*Demand substitution rate*Demand share per market[Hydrogen types,\
+		Hydrogen markets]
+	~	1/Year
+	~		|
+
+Scaling factor=
+	3
+	~	Dmnl
+	~		|
+
+Cost vector[Hydrogen types,Hydrogen markets]=
+	Demand share per market[Hydrogen types,Hydrogen markets]*Net Cost[Hydrogen markets,Hydrogen types\
+		]
+	~	Euro/ton
+	~		|
+
+Electrolysis innovation=
+	Electrolyser efficiency*Electroysis development*LN(Max efficiency/Electrolyser efficiency\
+		)
+	~	1/Year
+	~		|
+
+Average price[Hydrogen markets]=
+	SUM(Cost vector[Hydrogen types!,Hydrogen markets])
+	~	Euro/ton
+	~		|
+
+First adopter value green[Hydrogen markets]=
+	IF THEN ELSE(Demand share per market[Green hydrogen,Refineries]<Market maturity,Premium value\
+		[Hydrogen markets]*(Market maturity-Demand share per market[Green hydrogen,Hydrogen markets\
+		]),
+	0)
+	~	Euro/ton
+	~		|
+
+Capacity deficit[Hydrogen types]=
+	Hydrogen type demand[Hydrogen types]-Hydrogen production capacity[Hydrogen types]
+	~	ton
+	~		|
+
+Total market=
+	SUM(Hydrogen production capacity[Hydrogen types!])
+	~	ton
+	~		|
+
+Market shares[Hydrogen types]=
+	Hydrogen production capacity[Hydrogen types]/Total market
+	~	Dmnl
+	~		|
+
+Growth factor[Hydrogen types]=
+	Project Commissioning[Hydrogen types]/Hydrogen production capacity[Hydrogen types]
+	~	1/Year
+	~		|
+
+Demand share per market[Hydrogen types,Hydrogen markets]=
+	Hydrogen demand per market[Hydrogen markets,Hydrogen types]/SUM(Hydrogen demand per market\
+		[Hydrogen markets,Hydrogen types!])
+	~	Dmnl
+	~		|
+
+Plant scale= INTEG (
+	Scale up,
+		current scale)
+	~	MW
+	~		|
+
+Demand substitution rate=
+	0.2
+	~	1/Year
+	~		|
+
+Substitution delay=
+	1.5
+	~	Year
+	~		|
+
+Max efficiency=
+	0.85
+	~	Dmnl
+	~		|
+
+MW installed=
+	Hydrogen production capacity[Green hydrogen]/"tpa/MW"
+	~	MW
+	~		|
+
+Project lineup[Hydrogen types]= INTEG (
+	Project initiation[Hydrogen types]-Project development[Hydrogen types]-Terminated projects\
+		[Hydrogen types],
+		Initial projects[Hydrogen types])
+	~	ton
+	~		|
+
+Initial projects[Hydrogen types]=
+	0,10000,167900
+	~	ton
+	~		|
+
+RES threshold=
+	0.9
+	~	1
+	~		|
+
+Electrolyser efficiency= INTEG (
+	Electrolysis innovation,
+		Innitial efficiency)
+	~	Dmnl
+	~		|
+
+Innovation=
+	SMOOTH3(Learning rate*CCS cost , innovation cycle)
+	~	Euro/ton/Year
+	~		|
+
+innovation cycle=
+	5
+	~	Year
+	~		|
+
+Economies of scale[Green hydrogen]=
+	IF THEN ELSE(Market shares[Green hydrogen]<Market maturity, -Market adaptation speed\
+		*Market shares[Green hydrogen] ,-Market adaptation speed*(1-Market shares[Green hydrogen\
+		])) ~~|
+Economies of scale[Blue hydrogen]=
+	0 ~~|
+Economies of scale[Grey hydrogen]=
+	0
+	~	1/Year
+	~		|
+
+Average GDP growth=
+	0.03
+	~	1/Year
+	~		|
+
+Market maturity=
+	0.5
+	~	Dmnl
+	~		|
+
+Net Cost[Hydrogen markets,Green hydrogen]=
+	Green hydrogen net cost[Hydrogen markets] ~~|
+Net Cost[Hydrogen markets,Blue hydrogen]=
+	Blue hydrogen net cost[Blue hydrogen,Hydrogen markets] ~~|
+Net Cost[Hydrogen markets,Grey hydrogen]=
+	Grey hydrogen net cost[Hydrogen markets,Grey hydrogen]
+	~	Euro/ton
+	~		|
+
+Total hydrogen demand[Hydrogen markets]=
+	SUM(Hydrogen demand per market[Hydrogen markets,Hydrogen types!])
+	~	ton
+	~		|
+
+Potetial H2 capacity= INTEG (
+	Excess RES-Procured RES,
+		Initial potential for electrolysis)
+	~	MW
+	~		|
+
+Initial electricity price=
+	30
+	~	Euro/MWh
+	~		|
+
+Adaptation time=
+	1
+	~	Year
+	~		|
+
+Initial RES capacity=
+	14441
+	~	MW
+	~		|
+
+Installed RES capacity= INTEG (
+	New RES,
+		Initial RES capacity
+		)
+	~	MW
+	~		|
+
+Onshore RES increase=
+	0.03
+	~	1/Year
+	~		|
+
+GH decommissioning[Hydrogen types]=
+	DELAY3(Project Commissioning[Hydrogen types], Decommissioning time )*0
+	~	ton/Year
+	~		|
+
+Price elasticity of demand[Grey hydrogen]=
+	-0.7 ~~|
+Price elasticity of demand[Blue hydrogen]=
+	-1 ~~|
+Price elasticity of demand[Green hydrogen]=
+	-2
+	~	Dmnl
+	~		|
+
+Initial ETS=
+	80
+	~	Euro/ton
+	~		|
+
+Electricity Price= INTEG (
+	Price development,
+		Initial electricity price)
+	~	Euro/MWh
+	~		|
+
+Initial CAPEX[Hydrogen types]=
+	700,1500,5000
+	~	Euro/ton
+	~		|
+
+LCOH[Hydrogen types]= INTEG (
+	Resource pricing[Hydrogen types]-Efficiency[Hydrogen types],
+		Initial LCOH[Hydrogen types])
+	~	Euro/ton
+	~		|
+
+ETS cap reduction factor=
+	0.0274
+	~	1/Year
+	~		|
+
+EU ETS price= INTEG (
+	CO2 price increase,
+		Initial ETS
+		)
+	~	Euro/ton
+	~		|
+
+Retrofit uncertainty=
+	5
+	~	Year
+	~		|
+
+Initial gas price=
+	80
+	~	Euro/MWh
+	~		|
+
+Initial potential for electrolysis=
+	0
+	~	MW
+	~		|
+
+Natural gas price development=
+	0.01
+	~	1/Year
+	~		|
+
+natural gas price= INTEG (
+	Gas cost developments,
+		Initial gas price
+		)
+	~	Euro/MWh
+	~		|
+
+electricity price development=
+	0
+	~	1/Year
+	~		|
+
+Market adaptation speed=
+	0.5
+	~	1/Year
+	~		|
+
+Relative elasticity=
+	-0.5
+	~	Dmnl
+	~		|
+
+Innitial efficiency=
+	0.67
+	~	Dmnl
+	~		|
+
+Hydrogen production capacity[Hydrogen types]= INTEG (
+	CCS retrofit[Hydrogen types]+Project Commissioning[Hydrogen types]-GH decommissioning\
+		[Hydrogen types],
+		Initial hydrogen production capacity[Hydrogen types])
+	~	ton
+	~		|
+
+Under construction[Hydrogen types]= INTEG (
+	Investments[Hydrogen types]-Project Commissioning[Hydrogen types],
+		Initial construction[Hydrogen types])
+	~	ton
+	~		|
+
+CCS cost= INTEG (
+	-Innovation,
+		Operational costs carbon capture)
+	~	Euro/ton
+	~		|
+
+Potential project[Hydrogen types]=
+	MAX(Base,Capacity deficit[Hydrogen types])
+	~	ton
+	~		|
+
+Base=
+	0
+	~	ton
+	~		|
+
+Wind factor=
+	0.4
+	~	Dmnl
+	~		|
+
+Grey hydrogen net cost[Hydrogen markets,Grey hydrogen]=
+	LCOH[Grey hydrogen]
+	~	Euro/ton
+	~		|
+
+Premium value[Hydrogen markets]=
+	0,0,0,0,0,0
+	~	Euro/ton
+	~		|
+
+"2020 hydrogen demand"[Hydrogen markets]=
+	544000,480000,102000,1000,1,1
+	~	ton
+	~		|
+
+current scale=
+	100
+	~	MW
+	~		|
+
+Max capacity=
+	1000
+	~	MW
+	~		|
+
+"tpa/MW"=
+	146
+	~	ton/MW
+	~		|
+
+Electroysis development=
+	0.1
+	~	1/Year
+	~		|
+
+CAPEX cost[Hydrogen types]= INTEG (
+	-Cost reduction[Hydrogen types],
+		Initial CAPEX[Hydrogen types])
+	~	Euro/ton
+	~		|
+
+SMR efficiency=
+	0.8
+	~	Dmnl
+	~		|
+
+Initial construction[Hydrogen types]=
+	0,0,0
+	~	ton
+	~		|
+
+Initial hydrogen production capacity[Hydrogen types]=
+	1.5e+06,100000,10000
+	~	ton
+	~		|
+
+Learning rate=
+	0.05
+	~	1/Year
+	~		|
+
+Decommissioning time=
+	20
+	~	Year
+	~		|
+
+Electricity consumption=
+	50
+	~	MWh/ton
+	~		|
+
+Hydrogen markets:
+	Refineries, Ammonia, Methanol, Transport, Steel, Synthetic fuels
+	~	
+	~		|
+
+Energy types:
+	Grey hydrogen, Blue hydrogen, Green hydrogen, Coal, Natural gas, Oil, Electricity, Biofuels\
+		, Efuels
+	~	
+	~		|
+
+Operational costs carbon capture=
+	100
+	~	Euro/ton
+	~		|
+
+CO2 emissions=
+	6.84
+	~	ton/ton
+	~		|
+
+Energy content hydrogen=
+	52.2
+	~	GJ/ton
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 2050
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 2020
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.0078125
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Green Hydrogen
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,72,0
+10,1,CAPEX cost,1342,479,57,35,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,2,48,1635,481,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,2,4,0,0,22,0,0,0,-1--1--1,,1|(1574,481)|
+1,4,5,1,100,0,0,22,0,0,0,-1--1--1,,1|(1455,481)|
+11,5,0,1517,481,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,Cost reduction,1517,500,47,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,Initial CAPEX,1339,541,54,23,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,8,7,1,1,0,0,0,0,128,1,-1--1--1,,1|(1330,499)|
+10,9,Plant scale,1488,691,75,36,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,10,48,1250,691,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,13,9,4,0,0,22,0,0,0,-1--1--1,,1|(1376,691)|
+1,12,13,10,100,0,0,22,0,0,0,-1--1--1,,1|(1293,691)|
+11,13,0,1333,691,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,14,Scale up,1333,710,28,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,Learning rate,713,749,45,13,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,16,Electricity consumption,625,273,41,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,17,LCOH,1381,634,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,18,LCOH,1898,615,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,19,Time,1184,884,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,20,Investments,1610,1007,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,21,EU ETS price,345,339,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,22,CO2 emissions,819,363,48,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,23,Gas consumption,474,633,54,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,24,Operational costs carbon capture,622,685,56,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,25,Energy content hydrogen,502,712,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,26,25,23,1,0,0,0,0,64,0,-1--1--1,,1|(502,666)|
+10,27,CCS cost,679,628,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,28,48,845,637,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,29,31,28,4,0,0,22,0,0,0,-1--1--1,,1|(811,637)|
+1,30,31,27,100,0,0,22,0,0,0,-1--1--1,,1|(747,637)|
+11,31,0,781,637,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,32,Innovation,781,656,34,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,33,24,27,1,0,0,0,0,64,1,-1--1--1,,1|(637,647)|
+1,34,27,32,1,0,0,0,0,64,0,-1--1--1,,1|(681,662)|
+10,35,LCOH,820,449,70,32,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,36,Hydrogen production capacity,913,820,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,37,Time,308,239,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,38,SMR efficiency,377,702,49,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,39,38,23,1,0,0,0,0,64,0,-1--1--1,,1|(415,660)|
+10,40,Electrolyser efficiency,773,33,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,41,48,941,34,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,42,44,41,4,0,0,22,0,0,0,-1--1--1,,1|(897,34)|
+1,43,44,40,100,0,0,22,0,0,0,-1--1--1,,1|(832,34)|
+11,44,0,857,34,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,45,Electrolysis innovation,857,61,36,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,46,Electroysis development,783,-62,65,27,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,47,40,44,1,0,0,0,0,128,0,-1--1--1,,1|(823,-2)|
+10,48,Hydrogen production capacity,534,26,63,19,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,49,Project Commissioning,513,147,53,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,50,49,48,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,51,GH decommissioning,639,117,59,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,52,51,48,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,53,Initial hydrogen production capacity,359,107,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,54,53,48,0,1,0,0,0,0,1,-1--1--1,,1|(0,0)|
+10,55,Hydrogen production capacity,1273,482,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,56,"tpa/MW",1701,416,28,11,8,3,1,0,0,0,0,0,0,0,0,0,0,0
+10,57,current scale,1490,737,40,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,58,Max capacity,1228,777,43,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,59,Hydrogen production capacity,1640,587,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,60,Relative scale up,1488,618,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,61,9,60,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,62,1,6,1,0,0,0,0,128,0,-1--1--1,,1|(1461,515)|
+10,63,Hydrogen production capacity,1110,779,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,64,9,14,1,0,0,0,0,128,0,-1--1--1,,1|(1395,730)|
+10,65,Base,944,911,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,66,Project initiation,995,813,60,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,67,Investments,1108,817,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,68,Project lineup,1086,832,53,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,69,Growth factor,1385,793,54,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,70,69,14,1,0,0,0,0,128,0,-1--1--1,,1|(1324,721)|
+1,71,46,45,1,0,0,0,0,128,0,-1--1--1,,1|(856,-40)|
+10,72,Learning rate,719,743,43,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,73,CCS retrofit,534,64,49,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,74,73,48,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,75,Innitial efficiency,737,-2,54,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,76,75,40,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,77,Learning by doing,1067,329,41,19,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,78,Hydrogen production capacity,1333,175,68,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,79,Disturbance,1081,231,45,20,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,80,79,77,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,81,Relative elasticity,1217,301,39,27,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,82,Total market,1459,225,41,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,83,78,82,1,0,0,0,0,128,0,-1--1--1,,1|(1411,190)|
+10,84,Market shares,1394,293,46,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,85,82,84,1,0,0,0,0,128,0,-1--1--1,,1|(1419,263)|
+1,86,78,84,1,0,0,0,0,128,0,-1--1--1,,1|(1336,230)|
+10,87,Economies of scale,1477,389,44,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,88,84,87,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,89,Market adaptation speed,1585,265,57,27,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,90,89,87,1,0,0,0,0,128,0,-1--1--1,,1|(1490,347)|
+12,91,48,174,338,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,92,94,21,4,0,0,22,0,0,0,-1--1--1,,1|(275,338)|
+1,93,94,91,100,0,0,22,0,0,0,-1--1--1,,1|(208,338)|
+11,94,0,239,338,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,95,CO2 price increase,239,365,35,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,96,Initial ETS,345,378,34,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,97,96,21,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,98,ETS cap reduction factor,158,286,60,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,99,21,94,1,0,0,0,0,128,0,-1--1--1,,1|(309,299)|
+1,100,98,95,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,101,Initial LCOH,811,512,42,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,102,Initial CAPEX,603,608,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,103,Initial ETS,636,556,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,104,Operational costs carbon capture,672,640,61,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,105,CO2 emissions,919,521,57,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,106,Electricity consumption,764,732,45,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,107,Initial electricity price,867,717,39,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,108,Innitial efficiency,891,645,37,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,109,102,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,110,104,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,111,105,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,112,106,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,113,107,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,114,108,101,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,115,101,35,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+12,116,48,1088,460,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,117,119,116,4,0,0,22,0,0,0,-1--1--1,,1|(1035,460)|
+1,118,119,35,100,0,0,22,0,0,0,-1--1--1,,1|(935,460)|
+11,119,0,986,460,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,120,Efficiency,986,479,31,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,121,48,565,451,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,122,124,35,4,0,0,22,0,0,0,-1--1--1,,1|(705,451)|
+1,123,124,121,100,0,0,22,0,0,0,-1--1--1,,1|(612,451)|
+11,124,0,655,451,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,125,Resource pricing,655,470,53,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,126,16,124,1,0,0,0,0,128,0,-1--1--1,,1|(611,319)|
+10,127,Cost reduction,614,330,56,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,128,Scale up,506,326,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,129,6,120,1,0,0,0,0,128,0,-1--1--1,,1|(1357,401)|
+1,130,77,119,1,0,0,0,0,128,0,-1--1--1,,1|(1016,375)|
+1,131,22,125,1,0,0,0,0,128,0,-1--1--1,,1|(731,409)|
+1,132,95,125,1,0,0,0,0,128,0,-1--1--1,,1|(342,400)|
+1,133,32,120,1,0,0,0,0,128,0,-1--1--1,,1|(827,662)|
+10,134,Time,905,210,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,135,Market maturity,1603,359,51,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,136,135,87,1,0,0,0,0,128,0,-1--1--1,,1|(1566,338)|
+10,137,innovation cycle,863,153,50,11,8,3,1,0,0,0,0,0,0,0,0,0,0,0
+10,138,innovation cycle,1168,600,59,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,139,innovation cycle,857,734,59,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,140,139,32,1,0,0,0,0,128,0,-1--1--1,,1|(845,680)|
+1,141,22,120,1,0,0,0,0,128,0,-1--1--1,,1|(926,413)|
+10,142,Max efficiency,943,-12,46,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,143,142,45,1,0,0,0,0,128,0,-1--1--1,,1|(891,16)|
+1,144,58,14,1,0,0,0,0,128,0,-1--1--1,,1|(1250,754)|
+1,145,57,9,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,146,Premium value,1013,651,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,147,Scale factor,1569,559,38,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,148,Scaling factor,1700,546,41,24,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,149,148,147,1,0,0,0,0,128,0,-1--1--1,,1|(1661,518)|
+1,150,147,6,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,151,Initial gas price,815,578,56,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,152,23,101,1,0,0,0,0,128,0,-1--1--1,,1|(553,587)|
+1,153,40,124,1,0,0,0,0,128,0,-1--1--1,,1|(697,235)|
+10,154,"O&M costs",915,518,39,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,155,15,32,1,0,0,0,0,128,0,-1--1--1,,1|(762,715)|
+1,156,154,101,1,0,0,0,0,128,0,-1--1--1,,1|(885,507)|
+10,157,Project timeline,1513,799,58,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,158,"Operation & maintenance costs",913,586,52,25,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,159,158,154,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,160,7,154,1,0,0,0,0,128,0,-1--1--1,,1|(1138,541)|
+10,161,Total development time,1314,589,61,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,162,60,147,1,0,0,0,0,128,0,-1--1--1,,1|(1521,587)|
+10,163,Project development,1254,577,46,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,164,Project timeline,1281,619,58,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,165,164,6,1,0,0,0,0,128,0,-1--1--1,,1|(1424,571)|
+1,166,164,13,1,0,0,0,0,128,0,-1--1--1,,1|(1319,647)|
+1,167,35,119,1,0,0,0,0,128,0,-1--1--1,,1|(915,419)|
+10,168,percentual GDP growth,-324,-33,56,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,169,percentual GDP growth,-373,888,56,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,170,CO2 price delay,272,229,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,171,170,95,1,0,0,0,0,128,0,-1--1--1,,1|(237,310)|
+10,172,Project development,1194,72,46,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,173,Project initiation,1082,109,60,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,174,Progression rate,1158,165,51,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,175,Relative scale up,1195,74,60,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,176,81,77,1,0,0,0,0,192,0,-1--1--1,,1|(1169,345)|
+10,177,"t-1",1654,792,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,178,9,177,1,0,0,0,0,192,0,-1--1--1,,1|(1615,745)|
+1,179,177,60,1,0,0,0,0,192,0,-1--1--1,,1|(1649,705)|
+10,180,Scale factor,1297,1,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,181,87,5,1,0,0,0,0,192,0,-1--1--1,,1|(1492,434)|
+10,182,Price change,430,511,36,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,183,"MWh/GJ",786,289,44,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,184,183,124,1,0,0,0,0,128,0,-1--1--1,,1|(715,343)|
+1,185,182,125,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,186,Total CO2 emissions,-69,329,52,32,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,187,Total demand energy carriers,-382,389,52,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,188,Emission factors,-319,304,33,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,189,Hydrogen production capacity,-290,203,68,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,190,Hydrogen type demand,-149,201,53,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,191,Non hydrogen emissions,-215,358,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,192,hydrogen emissions,-155,259,31,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,193,189,192,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,194,192,186,1,0,0,0,0,128,0,-1--1--1,,1|(-92,283)|
+1,195,191,186,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,196,187,191,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,197,188,191,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,198,190,192,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,199,CO2 emissions,0,202,57,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,200,199,192,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,201,"GJ/PJ",-148,443,20,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,202,201,191,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,203,Emissions before,9,430,44,21,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,204,186,203,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,205,delay,116,456,18,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,206,205,203,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,207,emission delta,47,350,44,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,208,186,207,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,209,203,207,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,210,207,95,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,211,CO2 elasticity,247,451,45,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,212,211,95,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,213,TIME STEP,1764,782,50,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,214,7,147,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,215,69,174,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,216,78,77,1,0,0,0,0,128,0,-1--1--1,,1|(1181,228)|
+10,217,Min CAPEX,1599,401,42,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,218,217,5,1,0,0,0,0,128,0,-1--1--1,,1|(1533,434)|
+1,219,158,120,1,0,0,0,0,128,0,-1--1--1,,1|(932,544)|
+1,220,174,79,1,0,0,0,0,128,0,-1--1--1,,1|(1082,206)|
+10,221,Mton,80,561,19,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,222,CO2 emissions industry,-75,525,49,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,223,186,222,1,0,0,0,0,128,0,-1--1--1,,1|(-70,505)|
+1,224,221,222,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,225,"1/year",1665,616,21,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,226,225,147,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,227,"Gas price/GJ",796,550,51,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,228,227,101,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,229,Electroysis development,106,691,51,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,230,"MWh/GJ",323,652,40,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,231,23,125,1,0,0,0,0,128,0,-1--1--1,,1|(510,531)|
+10,232,year,1728,705,24,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,233,232,177,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,234,Electricity production emissions,-278,494,67,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,235,Grid factor,-197,583,35,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,236,"% fossil electricity",-358,566,56,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,237,"% renewable",-418,673,51,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,238,237,236,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,239,201,234,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,240,235,234,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,241,Total electricity demand,-445,494,54,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,242,241,234,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,243,234,191,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,244,236,234,1,0,0,0,0,128,0,-1--1--1,,1|(-327,517)|
+10,245,Unit conversion,990,164,56,20,8,130,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,246,"100%",1194,100,21,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,247,Log factor,1059,102,34,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,248,247,174,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,249,246,174,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,250,96,101,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,251,year,1136,58,24,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,252,251,174,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,253,Dimension factor,953,274,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,254,253,77,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,255,Efficiency increase,1075,608,36,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,256,Technological development,418,562,49,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,257,256,125,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*RES availibility
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,100,0
+10,1,Installed RES capacity,722,184,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,2,48,556,182,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,1,4,0,0,22,0,0,0,-1--1--1,,1|(652,179)|
+1,4,5,2,100,0,0,22,0,0,0,-1--1--1,,1|(588,179)|
+11,5,0,616,179,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,New RES,616,204,61,17,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,Project Commissioning,716,-66,53,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,8,Time,238,-10,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,9,Time,797,125,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,10,TIME STEP,439,99,50,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,11,Investments,865,-11,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,12,Total electricity demand,932,614,51,26,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,13,48,752,617,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,14,16,12,4,0,0,22,0,0,0,-1--1--1,,1|(853,614)|
+1,15,16,13,100,0,0,22,0,0,0,-1--1--1,,1|(788,614)|
+11,16,0,820,614,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,17,New electricity demand,820,642,53,20,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,18,Initial power demand,933,675,40,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,19,Electricity consumption,417,554,59,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,20,Project initiation,404,476,41,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,21,18,12,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,22,Project development,801,5,46,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,23,Wind factor,940,130,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,24,Project in development,598,-30,46,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,25,Project lineup,824,-69,53,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,26,Plant scale,905,150,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,27,Base,537,31,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,28,Plant scale,841,220,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,29,"tpa/MW",738,222,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,30,"tpa/MW",654,-61,41,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,31,To decarbonize,746,417,49,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,32,Initial RES capacity,722,223,34,19,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,33,32,1,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,34,Roadmap WOZ,496,160,56,24,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,35,34,5,1,0,0,0,0,128,0,-1--1--1,,1|(580,157)|
+10,36,Onshore RES increase,681,112,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,37,36,6,1,0,0,0,0,128,0,-1--1--1,,1|(642,135)|
+10,38,Plant scale,273,508,43,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,39,Potetial H2 capacity,342,340,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,40,Wind factor,338,216,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,41,"tpa/MW",389,501,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,42,RES per electrolyser,261,442,37,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,43,38,42,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,44,Initial potential for electrolysis,345,387,49,19,8,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,45,44,39,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+12,46,48,530,338,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,47,49,39,4,0,0,22,0,0,0,-1--1--1,,1|(413,338)|
+1,48,49,46,100,0,0,22,0,0,0,-1--1--1,,1|(488,338)|
+11,49,0,450,338,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,50,Excess RES,450,357,39,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,51,48,178,340,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,52,54,51,4,0,0,22,0,0,0,-1--1--1,,1|(211,340)|
+1,53,54,39,100,0,0,22,0,0,0,-1--1--1,,1|(274,340)|
+11,54,0,240,340,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,55,Procured RES,240,359,46,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,56,42,55,1,0,0,0,0,128,0,-1--1--1,,1|(236,402)|
+1,57,39,54,1,0,0,0,0,128,0,-1--1--1,,1|(290,295)|
+10,58,Project lineup,144,392,53,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,59,Wind factor,451,224,38,11,8,3,1,0,0,0,0,0,0,0,0,0,0,0
+10,60,"% renewable",806,352,42,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,61,Wind factor,685,318,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,62,"% renewable",175,210,51,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,63,Time,568,813,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,64,Wind factor,283,488,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,65,Project timeline,355,248,58,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,66,65,54,1,0,0,0,0,128,0,-1--1--1,,1|(270,263)|
+10,67,Energy demand change,1304,711,72,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,68,Energy substitution,1239,807,41,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,69,Industrial electricity demand cange,1110,694,61,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,70,67,69,1,0,0,0,0,128,0,-1--1--1,,1|(1213,690)|
+1,71,68,69,1,0,0,0,0,128,0,-1--1--1,,1|(1200,760)|
+10,72,"MWh/GJ",387,497,40,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+12,73,48,1111,615,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,74,76,12,4,0,0,22,0,0,0,-1--1--1,,1|(1013,615)|
+1,75,76,73,100,0,0,22,0,0,0,-1--1--1,,1|(1050,615)|
+11,76,0,1050,615,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,77,Industrial Electricity demand increase,1050,642,62,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,78,69,77,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,79,Initial energy demand,1033,755,45,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,80,Initial other electricity demand,922,755,55,18,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,81,80,18,1,0,0,0,0,128,0,-1--1--1,,1|(926,716)|
+1,82,79,18,1,0,0,0,0,128,0,-1--1--1,,1|(1020,696)|
+10,83,Electrification of domestic gas use,675,693,54,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,84,Current domestic electricity demand,810,719,58,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,85,12,84,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,86,Industrial electricity demand,701,610,66,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,87,total industrial energy demand,627,603,54,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,88,Total demand energy carriers,758,786,52,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,89,88,84,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,90,Domestic electrification,794,551,42,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,91,83,17,1,0,0,0,0,128,0,-1--1--1,,1|(762,650)|
+1,92,84,17,1,0,0,0,0,128,0,-1--1--1,,1|(802,666)|
+1,93,90,16,1,0,0,0,0,128,0,-1--1--1,,1|(817,594)|
+10,94,"MWh/GJ",1002,171,40,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,95,"MWh/GJ",980,210,40,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,96,34,49,1,0,0,0,0,128,0,-1--1--1,,1|(463,217)|
+10,97,Project in development,144,166,46,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,98,RES demand,186,239,42,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,99,97,98,1,0,0,0,0,128,0,-1--1--1,,1|(172,200)|
+10,100,"tpa/MW",252,181,37,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,101,100,98,1,0,0,0,0,128,0,-1--1--1,,1|(225,210)|
+1,102,98,54,1,0,0,0,0,128,0,-1--1--1,,1|(223,277)|
+10,103,Switch combined tendering,378,195,36,19,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,104,Share RES allocated to H2,540,427,49,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,105,104,50,1,0,0,0,0,128,0,-1--1--1,,1|(509,390)|
+1,106,103,49,1,0,0,0,0,128,0,-1--1--1,,1|(433,262)|
+10,107,Other additional renewables,562,98,50,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,108,107,6,1,0,0,0,0,128,0,-1--1--1,,1|(603,149)|
+10,109,Full load hours,159,401,35,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,110,109,55,1,0,0,0,0,128,0,-1--1--1,,1|(183,391)|
+10,111,TIME STEP,500,666,50,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,112,1,6,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,113,RES secured for electrolysis,414,491,53,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,114,"MWh/PJ",772,505,30,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,115,"MWh/MW",763,467,37,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,116,Time,759,443,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,117,Total electricity demand increase,627,378,54,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,118,Industrial electricity demand,591,479,66,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,119,17,117,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,120,115,117,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,121,114,117,1,0,0,0,0,128,0,-1--1--1,,1|(685,492)|
+1,122,61,6,1,0,0,0,0,128,0,-1--1--1,,1|(637,270)|
+10,123,Electricity production capacity required,894,438,68,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,124,115,123,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,125,114,123,1,0,0,0,0,64,0,-1--1--1,,1|(827,491)|
+1,126,12,123,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,127,123,31,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,128,1,60,1,0,0,0,0,128,0,-1--1--1,,1|(793,308)|
+1,129,61,60,1,0,0,0,0,128,0,-1--1--1,,1|(766,342)|
+1,130,123,60,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,131,123,6,1,0,0,0,0,128,0,-1--1--1,,1|(939,236)|
+1,132,76,117,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,133,61,117,1,0,0,0,0,128,0,-1--1--1,,1|(649,342)|
+1,134,60,31,1,0,0,0,0,128,0,-1--1--1,,1|(776,391)|
+1,135,31,117,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,136,Climate agreement timeframe,587,514,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,137,136,117,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,138,Surplus RES,572,292,41,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,139,117,138,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,140,6,138,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,141,138,49,1,0,0,0,0,128,0,-1--1--1,,1|(516,306)|
+10,142,Wind factor,427,407,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,143,142,50,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+12,144,48,928,471,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,145,147,144,4,0,0,22,0,0,0,-1--1--1,,1|(928,529)|
+1,146,147,12,100,0,0,22,0,0,0,-1--1--1,,1|(928,561)|
+11,147,0,928,529,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,148,Efficiency of electricity use,979,529,43,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,149,12,148,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,150,Additional E demand from electrolysis,1153,539,49,25,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,151,55,150,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,152,115,150,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,153,114,150,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,154,60,150,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,155,150,76,1,0,0,0,0,128,0,-1--1--1,,1|(1123,581)|
+10,156,Efficiency increase,1083,462,36,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,157,156,148,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Production capacity
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,90,0
+10,1,Hydrogen production capacity,1203,333,55,25,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+11,2,0,854,335,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,3,Investments,854,354,38,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,4,5,1,4,0,0,22,0,0,0,-1--1--1,,1|(1117,339)|
+11,5,0,1080,339,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,Project Commissioning,1080,366,48,19,40,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+12,7,48,1388,349,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,7,4,0,0,22,0,0,0,-1--1--1,,1|(1352,348)|
+1,9,10,1,100,0,0,22,0,0,0,-1--1--1,,1|(1286,348)|
+11,10,0,1320,348,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,11,GH decommissioning,1320,375,54,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,Installed RES capacity,670,666,44,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,13,Initial construction,953,375,53,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,14,Initial hydrogen production capacity,1205,373,73,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,15,Decommissioning time,1333,440,56,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,16,14,1,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+1,17,15,11,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,18,Hydrogen demand per market,693,443,56,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,19,Electricity consumption,616,626,45,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,20,Project lineup,467,339,57,29,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,21,48,267,337,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,22,24,20,4,0,0,22,0,0,0,-1--1--1,,1|(376,337)|
+1,23,24,21,100,0,0,22,0,0,0,-1--1--1,,1|(303,337)|
+11,24,0,336,337,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,25,Project initiation,336,356,51,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,26,48,461,161,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,27,29,26,4,0,0,22,0,0,0,-1--1--1,,1|(461,199)|
+1,28,29,20,100,0,0,22,0,0,0,-1--1--1,,1|(461,275)|
+11,29,0,461,235,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,30,Terminated projects,505,235,36,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,31,Hydrogen type demand,460,497,53,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,32,Capacity deficit,103,323,42,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,33,Plant scale,762,438,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,34,"tpa/MW",971,478,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,35,Potential project,177,373,52,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,36,32,35,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,37,Base,177,290,18,10,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,38,37,35,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,39,35,25,1,0,0,0,0,128,0,-1--1--1,,1|(212,378)|
+10,40,Project in development,746,333,52,26,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,41,43,40,4,0,0,22,0,0,0,-1--1--1,,1|(646,332)|
+1,42,43,20,100,0,0,22,0,0,0,-1--1--1,,1|(555,332)|
+11,43,0,592,332,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,44,Project development,592,365,65,25,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,45,2,40,100,0,0,22,0,0,0,-1--1--1,,1|(823,335)|
+10,46,Time,634,297,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,47,Time,341,601,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,48,TIME STEP,547,289,50,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,49,Growth factor,1115,250,34,26,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,50,1,49,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,51,53,1,4,0,0,22,0,0,0,-1--1--1,,3|(1174,207)|(1174,207)|(1174,257)|
+1,52,53,1,100,0,0,22,0,0,0,-1--1--1,,3|(1331,336)|(1331,336)|(1294,336)|
+11,53,0,1331,207,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,54,CCS retrofit,1331,226,40,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,55,Capacity deficit,1435,166,58,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,56,55,53,1,0,0,0,0,128,0,-1--1--1,,1|(1366,186)|
+10,57,Base,1430,223,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,58,"tpa/MW",1107,549,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,59,MW installed,1117,479,41,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,60,1,59,1,0,0,0,0,128,0,-1--1--1,,1|(1136,402)|
+1,61,58,59,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,62,Under construction,953,333,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,63,2,62,4,0,0,22,0,0,0,-1--1--1,,1|(886,335)|
+1,64,5,62,100,0,0,22,0,0,0,-1--1--1,,1|(1033,339)|
+1,65,13,62,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,66,Decommissioning time,363,501,60,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,67,Base,546,277,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,68,6,11,1,0,0,0,0,128,0,-1--1--1,,1|(1169,434)|
+1,69,1,54,1,0,0,0,0,128,0,-1--1--1,,1|(1289,302)|
+10,70,Retrofit uncertainty,1284,147,59,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,71,70,53,1,0,0,0,0,128,0,-1--1--1,,1|(1322,184)|
+10,72,Procured RES,735,535,55,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,73,"tpa/MW",659,499,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,74,Learning by doing,708,150,55,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,75,Time,797,123,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,76,RES threshold,916,600,46,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,77,"% renewable",1039,608,51,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,78,Installed RES capacity,1000,618,48,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,79,Initial projects,467,387,45,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,80,79,20,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+1,81,5,49,1,0,0,0,0,128,0,-1--1--1,,1|(1087,296)|
+10,82,Project in development,70,179,46,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,83,Under construction,199,36,44,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,84,initial development,739,382,58,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,85,84,40,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,86,Total project pipeline,-67,454,42,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,87,79,86,1,1,0,0,0,128,0,-1--1--1,,1|(37,357)|
+1,88,84,86,1,1,0,0,0,128,0,-1--1--1,,1|(149,684)|
+1,89,13,86,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,90,14,86,1,1,0,0,0,128,0,-1--1--1,,1|(842,677)|
+10,91,Demand growth,196,480,60,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,92,Learning by doing,857,-16,43,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,93,Project timeline,731,75,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,94,Initial project realisation time,734,113,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,95,94,93,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+1,96,93,3,1,1,0,0,0,64,0,-1--1--1,,1|(798,202)|
+1,97,93,44,1,0,0,0,0,64,0,-1--1--1,,1|(606,191)|
+12,98,48,961,75,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,99,101,98,4,0,0,22,0,0,0,-1--1--1,,1|(911,75)|
+1,100,101,93,100,0,0,22,0,0,0,-1--1--1,,1|(815,75)|
+11,101,0,866,75,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,102,Learning curve,866,105,49,22,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,103,93,101,1,0,0,0,0,128,0,-1--1--1,,1|(788,37)|
+1,104,92,101,1,0,0,0,0,128,0,-1--1--1,,1|(863,27)|
+10,105,Economies of scale,972,1,48,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,106,Scale factor,748,5,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,107,105,102,1,0,0,0,0,128,0,-1--1--1,,1|(907,43)|
+12,108,48,747,170,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,109,111,108,4,0,0,22,0,0,0,-1--1--1,,1|(747,205)|
+1,110,111,40,100,0,0,22,0,0,0,-1--1--1,,1|(747,275)|
+11,111,0,747,238,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,112,Cancelled projects,814,238,59,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,113,Total development time,654,192,56,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,114,93,113,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,115,Hydrogen type demand,1145,674,53,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,116,Efficiency,1391,545,41,11,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,117,CO2 emissions,1554,491,57,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,118,117,116,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,119,Cost reduction,1542,510,56,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,120,119,116,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,121,Innovation,1566,529,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,122,121,116,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,123,LCOH,1530,548,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,124,123,116,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,125,Learning by doing,1578,567,43,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,126,125,116,0,1,0,0,0,0,0,-1--1--1,,1|(0,0)|
+10,127,additionality requirement,981,462,39,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,128,76,127,1,0,0,0,0,128,0,-1--1--1,,1|(948,540)|
+1,129,77,127,1,0,0,0,0,128,0,-1--1--1,,1|(1038,548)|
+10,130,Max capacity with additionality,822,455,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,131,72,130,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,132,73,130,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,133,"Operation & maintenance costs",1391,575,30,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,134,133,116,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,135,Potential project,909,199,33,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,136,Investment decisions,869,293,41,15,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,137,40,136,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,138,135,136,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,139,40,112,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,140,136,112,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,141,113,112,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,142,136,3,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,143,130,3,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,144,Installed RES capacity,852,534,48,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,145,144,130,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,146,127,130,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,147,excess projects,359,271,49,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,148,20,147,1,0,0,0,0,128,0,-1--1--1,,1|(415,287)|
+1,149,35,147,1,0,0,0,0,128,0,-1--1--1,,1|(263,309)|
+1,150,147,30,1,0,0,0,0,128,0,-1--1--1,,1|(423,244)|
+1,151,113,30,1,0,0,0,0,128,0,-1--1--1,,1|(552,209)|
+10,152,"1/year",280,417,30,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,153,year,383,439,15,11,8,3,1,0,0,0,0,0,0,0,0,0,0,0
+10,154,year,1030,286,24,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,155,59,130,1,0,0,0,0,128,0,-1--1--1,,1|(1025,436)|
+10,156,Wind factor,629,447,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,157,156,130,1,0,0,0,0,128,0,-1--1--1,,1|(764,477)|
+10,158,"1/year",697,434,30,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,159,Procured RES,536,618,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,160,"tpa/MW",536,618,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,161,"1/year",536,618,30,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,162,Installed RES capacity,536,618,48,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,163,Wind factor,536,618,47,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,164,Unit conversion,649,450,51,11,8,3,1,0,0,0,0,0,0,0,0,0,0,0
+1,165,164,130,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,166,Unit conversion,1012,200,58,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,167,166,3,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,168,164,25,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,169,20,43,1,0,0,0,0,128,0,-1--1--1,,1|(548,308)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*H2 demand
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,80,0
+10,1,Hydrogen demand per market,1127,427,52,28,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,2,48,856,426,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,4,2,100,0,0,22,0,0,0,-1--1--1,,1|(910,426)|
+11,4,0,961,426,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,5,Increased demand,961,454,59,20,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+1,6,4,1,4,0,0,22,0,0,0,-1--1--1,,1|(1021,426)|
+10,7,LCOH,482,122,33,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,8,Cost reduction,2460,32,56,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,9,LCOH,1557,-76,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,10,Plant scale,2433,-44,43,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,11,Hydrogen production capacity,2122,-158,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,12,"2020 hydrogen demand",941,539,49,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,13,Hydrogen production capacity,2146,403,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,14,Initial hydrogen production capacity,1588,159,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,15,Green hydrogen value,441,312,51,20,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,16,First adopter value green,167,248,58,18,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,17,Premium value,20,302,46,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,18,Time,248,184,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,19,Green hydrogen net cost,564,255,52,19,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,20,7,19,1,0,0,0,0,128,0,-1--1--1,,1|(527,180)|
+10,21,Blue hydrogen net cost,685,128,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,22,7,21,1,0,0,0,0,128,0,-1--1--1,,1|(587,110)|
+10,23,Net Cost,793,225,30,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,24,21,23,1,0,0,0,0,128,0,-1--1--1,,1|(736,167)|
+1,25,19,23,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,26,Grey hydrogen net cost,634,176,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,27,26,23,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,28,7,26,1,0,0,0,0,128,0,-1--1--1,,1|(554,137)|
+1,29,1,4,1,0,0,0,0,128,0,-1--1--1,,1|(1061,398)|
+10,30,Total hydrogen demand,1209,364,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,31,1,30,1,0,0,0,0,128,0,-1--1--1,,1|(1175,393)|
+10,32,Hydrogen production capacity,1563,165,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,33,Hydrogen type demand,1309,65,67,40,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,34,Capacity deficit,1435,117,49,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,35,32,34,1,1,0,0,0,128,0,-1--1--1,,1|(1534,158)|
+1,36,16,15,1,0,0,0,0,128,0,-1--1--1,,1|(357,298)|
+12,37,48,1044,58,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,38,40,33,4,0,0,22,0,0,0,-1--1--1,,1|(1205,58)|
+1,39,40,37,100,0,0,22,0,0,0,-1--1--1,,1|(1105,58)|
+11,40,0,1163,58,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,41,Demand growth,1163,77,51,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,42,Time,1251,-36,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,43,Adaptation time,957,492,50,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,44,43,5,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,45,Price elasticity of demand,830,361,58,27,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,46,Initial demand distribution,1068,488,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,47,Hydrogen production capacity,881,-134,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,48,12,46,1,0,0,0,0,128,0,-1--1--1,,1|(1051,508)|
+10,49,Efficiency,906,196,40,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,50,Resource pricing,1015,192,35,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,51,LCOH,927,-38,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,52,33,34,1,0,0,0,0,128,0,-1--1--1,,1|(1389,85)|
+1,53,15,19,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,54,Bottom up demand,925,315,55,20,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,55,50,54,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,56,49,54,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,57,Net Cost,821,95,39,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,58,46,1,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+1,59,45,4,1,0,0,0,0,128,0,-1--1--1,,1|(913,389)|
+1,60,54,4,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,61,4,41,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,62,Initial demand,1306,117,44,11,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,63,62,33,0,0,0,0,0,64,1,-1--1--1,,1|(0,0)|
+10,64,Project lineup,1195,206,53,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,65,Initial projects,1195,258,54,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,66,Initial hydrogen production capacity,1373,236,68,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,67,Net Cost,1566,444,39,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,68,Market shares,1878,176,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,69,Average price,1456,451,45,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,70,LCOH,1657,647,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,71,Cost vector,1507,522,38,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,72,71,69,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,73,Demand share per market,1347,492,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,74,1,73,1,0,0,0,0,128,0,-1--1--1,,1|(1262,458)|
+1,75,73,71,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,76,67,71,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,77,Demand substitution rate,1602,342,57,27,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,78,80,1,4,0,0,22,0,0,0,-1--1--1,,3|(1138,338)|(1138,337)|(1138,368)|
+1,79,80,1,100,0,0,22,0,0,0,-1--1--1,,3|(1339,427)|(1335,427)|(1257,427)|
+11,80,0,1339,338,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,81,Substitution,1339,365,44,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,82,Substitution factor,1504,383,57,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,83,69,82,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,84,67,82,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,85,82,81,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,86,77,82,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,87,30,81,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,88,Substitution delay,1403,292,55,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,89,88,81,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,90,80,41,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,91,Market maturity,22,247,60,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,92,17,16,1,0,0,0,0,128,0,-1--1--1,,1|(119,280)|
+10,93,Market shares,150,189,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,94,91,16,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,95,Base,120,140,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,96,Demand share per market,22,187,64,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,97,96,16,1,0,0,0,0,128,0,-1--1--1,,1|(110,211)|
+10,98,CAPEX support,381,562,64,34,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,99,48,675,561,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,100,102,99,4,0,0,22,0,0,0,-1--1--1,,1|(615,561)|
+1,101,102,98,100,0,0,22,0,0,0,-1--1--1,,1|(499,561)|
+11,102,0,560,561,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,103,Funding,560,580,26,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,104,Initial ICPEI funds,379,611,65,16,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,105,104,98,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,106,Investments,486,706,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,107,"tpa/MW",611,732,37,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,108,Supported projects,552,649,34,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,109,106,108,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,110,108,103,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,111,"% CAPEX support",709,474,36,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,112,CAPEX cost,607,466,51,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,113,112,102,1,0,0,0,0,128,0,-1--1--1,,1|(574,511)|
+1,114,111,102,1,0,0,0,0,128,0,-1--1--1,,1|(645,503)|
+10,115,Base,494,615,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,116,98,19,1,0,0,0,0,128,0,-1--1--1,,1|(535,424)|
+1,117,112,19,1,0,0,0,0,128,0,-1--1--1,,1|(601,383)|
+1,118,111,19,1,0,0,0,0,128,0,-1--1--1,,1|(664,375)|
+1,119,98,102,1,0,0,0,0,128,0,-1--1--1,,1|(497,529)|
+1,120,73,82,1,0,0,0,0,128,0,-1--1--1,,1|(1375,428)|
+10,121,Total project pipeline,1017,606,46,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,122,121,46,1,0,0,0,0,128,0,-1--1--1,,1|(1042,560)|
+1,123,23,54,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,124,Average GDP growth,1368,588,63,26,8,130,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,125,1,81,1,0,0,0,0,128,0,-1--1--1,,1|(1229,402)|
+10,126,Total project pipeline,1389,172,46,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,127,126,62,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,128,CO2 emissions,449,-75,57,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,129,gross CO2 avoidance costs,299,-66,51,25,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,130,Funding gap,340,24,39,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,131,7,130,1,0,0,0,0,128,0,-1--1--1,,1|(425,100)|
+1,132,130,129,1,0,0,0,0,128,0,-1--1--1,,1|(308,-28)|
+1,133,128,129,1,0,0,0,0,128,0,-1--1--1,,1|(358,-54)|
+10,134,EU ETS price,270,-149,54,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,135,net CO2 avoidance cost,429,-144,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,136,134,135,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,137,129,135,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,138,"SDE++",451,-227,54,32,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,139,48,693,-229,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,140,142,139,4,0,0,22,0,0,0,-1--1--1,,1|(643,-229)|
+1,141,142,138,100,0,0,22,0,0,0,-1--1--1,,1|(548,-229)|
+11,142,0,598,-229,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,143,"SDE++ funding",598,-210,48,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,144,"SDE++ fund",451,-289,49,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,145,144,138,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,146,Subsidy intensity,662,-88,52,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,147,146,143,1,0,0,0,0,128,0,-1--1--1,,1|(648,-162)|
+10,148,Investments,724,-317,47,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,149,148,142,1,0,0,0,0,128,0,-1--1--1,,1|(629,-258)|
+1,150,128,143,1,0,0,0,0,128,0,-1--1--1,,1|(571,-136)|
+1,151,138,142,1,0,0,0,0,128,0,-1--1--1,,1|(524,-263)|
+10,152,Clean hydrogen cost reduction,515,-5,52,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,153,143,152,1,0,0,0,0,128,0,-1--1--1,,1|(593,-119)|
+1,154,146,152,1,0,0,0,0,128,0,-1--1--1,,1|(605,-9)|
+1,155,128,152,1,0,0,0,0,128,0,-1--1--1,,1|(451,-24)|
+1,156,152,19,1,0,0,0,0,128,0,-1--1--1,,1|(423,171)|
+10,157,GDP,1320,574,27,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,158,GDP growth,1434,635,50,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,159,percentual GDP growth,1578,686,56,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,160,Time,-143,281,26,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+12,161,48,1136,648,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,162,164,1,4,0,0,22,0,0,0,-1--1--1,,1|(1136,500)|
+1,163,164,161,100,0,0,22,0,0,0,-1--1--1,,1|(1136,551)|
+11,164,0,1136,551,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,165,Substitution from other energy,1198,551,54,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,166,Industrial energy substitution factor,1247,752,61,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,167,Transport fuel substitution factor,1403,750,61,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,168,hydrogen substitution from other energy,1263,648,67,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,169,166,168,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,170,167,168,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,171,1,165,1,0,0,0,0,128,0,-1--1--1,,1|(1212,492)|
+1,172,168,165,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,173,Substitution from other energy,1033,-25,59,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,174,173,40,1,0,0,0,0,128,0,-1--1--1,,1|(1114,1)|
+10,175,Substitution delay,1320,574,42,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,176,175,165,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,177,135,146,1,0,0,0,0,128,0,-1--1--1,,1|(575,-130)|
+1,178,152,21,1,0,0,0,0,128,0,-1--1--1,,1|(633,75)|
+10,179,Renewable fuel premium,228,448,54,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,180,Fuel multiplier,324,501,53,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,181,Energy content,307,413,56,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,182,Hydrogen fuel premium,433,414,45,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,183,179,182,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,184,180,182,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,185,181,182,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,186,Premium duration,452,482,55,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,187,186,182,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,188,182,15,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,189,Compression costs,304,252,60,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,190,189,15,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,191,Market value creation,219,354,43,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,192,adaptive policy,370,211,43,24,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,193,LCOH,316,162,33,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,194,7,192,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,195,192,15,1,0,0,0,0,128,0,-1--1--1,,1|(386,266)|
+1,196,191,15,1,0,0,0,0,64,0,-1--1--1,,1|(324,318)|
+10,197,Adaptive policy refineries switch,257,122,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,198,197,192,1,0,0,0,0,128,0,-1--1--1,,1|(327,168)|
+1,199,181,15,1,0,0,0,0,128,0,-1--1--1,,1|(368,376)|
+1,200,179,15,1,0,0,0,0,128,0,-1--1--1,,1|(255,408)|
+10,201,Total subsidies,16,575,47,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,202,104,201,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,203,144,201,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,204,Million,-20,518,25,13,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,205,48,241,-224,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,206,208,205,4,0,0,22,0,0,0,-1--1--1,,1|(241,-224)|
+1,207,208,138,100,0,0,22,0,0,0,-1--1--1,,1|(361,-224)|
+11,208,0,319,-224,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,209,SDE allocated to different projects,319,-197,55,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,210,Allocation key SDE,246,-327,46,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,211,210,208,1,0,0,0,0,128,0,-1--1--1,,1|(314,-249)|
+1,212,138,208,1,0,0,0,0,128,0,-1--1--1,,1|(373,-270)|
+12,213,48,163,560,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,214,216,213,4,0,0,22,0,0,0,-1--1--1,,1|(240,560)|
+1,215,216,98,100,0,0,22,0,0,0,-1--1--1,,1|(281,560)|
+11,216,0,240,560,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,217,Allocated to other projects,240,587,58,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,218,Allocation key,197,684,46,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,219,98,217,1,0,0,0,0,128,0,-1--1--1,,1|(288,616)|
+1,220,218,217,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,221,Biofuel demand,830,779,58,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,222,Industrial CO2 savings with green hydrogen,913,721,68,37,3,131,0,0,0,0,0,0,0,0,0,0,0,0
+12,223,48,665,713,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,224,226,222,4,0,0,22,0,0,0,-1--1--1,,1|(803,713)|
+1,225,226,223,100,0,0,22,0,0,0,-1--1--1,,1|(665,713)|
+11,226,0,755,713,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,227,CO2 avoidance,755,732,50,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,228,Mton,920,822,28,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,229,Initial CO2 saving,923,774,56,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,230,229,222,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,231,Emission factors,859,900,33,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,232,Decarbonisation,551,872,40,20,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,233,Energy demand change,679,866,55,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,234,Energy substitution,655,814,41,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,235,234,227,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,236,Hydrogen emissions correction factor,793,649,71,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,237,236,226,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,238,CO2 emissions,538,841,57,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+12,239,48,1154,715,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,240,242,222,4,0,0,22,0,0,0,-1--1--1,,1|(1021,715)|
+1,241,242,239,100,0,0,22,0,0,0,-1--1--1,,1|(1067,715)|
+11,242,0,1067,715,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,243,Hydrogen industry CO2 savings,1067,742,59,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,244,CO2 emissions,1067,780,57,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,245,244,243,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,246,81,243,0,1,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,247,228,243,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,248,"GJ/PJ",721,861,29,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,249,Million,449,649,28,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,250,249,98,1,0,0,0,0,128,1,-1--1--1,,1|(456,587)|
+10,251,Million,549,-317,32,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,252,251,138,0,0,0,0,0,128,1,-1--1--1,,1|(0,0)|
+10,253,"Mton/year",1066,663,34,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,254,253,242,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,255,"Emissions/PJ",792,822,41,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,256,231,255,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,257,228,255,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,258,248,255,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,259,255,227,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+12,260,48,1129,155,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,261,263,260,4,0,0,22,0,0,0,-1--1--1,,1|(1129,155)|
+1,262,263,1,100,0,0,22,0,0,0,-1--1--1,,1|(1129,341)|
+11,263,0,1129,277,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,264,Decarbonisation of transport,1197,277,60,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,265,1,263,1,0,0,0,0,128,0,-1--1--1,,1|(1067,343)|
+10,266,Policy market size adjustment,1231,220,62,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,267,266,264,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*Energy demand
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,70,0
+10,1,Total demand energy carriers,806,511,74,30,3,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,Initial energy demand,719,571,51,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Coal demand,437,589,53,23,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,4,Oil demand,461,638,47,23,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,5,Natural gas demand,552,668,45,23,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,6,Industrial electricity demand,623,628,43,25,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,7,Biofuel demand,736,630,62,23,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+10,8,Efuels demand,752,582,59,23,8,3,1,0,-1,0,0,0,0,0,0,0,0,0
+1,9,3,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,10,4,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,11,5,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,12,6,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,13,7,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,14,8,2,0,1,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,15,2,1,0,0,0,0,0,192,1,-1--1--1,,1|(0,0)|
+10,16,Energy carrier demand elasticity,611,439,56,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,17,48,556,499,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,20,17,100,0,0,22,0,192,0,-1--1--1,,1|(604,499)|
+1,19,20,1,4,0,0,22,0,192,0,-1--1--1,,1|(693,499)|
+11,20,0,649,499,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,21,Energy demand change,649,530,62,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,22,natural gas price,558,-248,49,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,23,EU ETS price,424,-90,41,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,24,Electricity Price,798,-216,46,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,25,Emission factors,419,-209,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,26,Energy content,118,-129,60,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,27,Coal price,249,-246,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,28,Biofuel price,956,-204,51,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,29,Efuel price,1131,-122,44,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,30,"Gas price/GJ",591,-134,53,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,31,"MWh/GJ",685,-194,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,32,31,30,1,0,0,0,0,192,0,-1--1--1,,1|(644,-182)|
+1,33,25,30,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,34,"Coal price/GJ",269,-144,55,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,35,27,34,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,36,25,34,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,37,26,34,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,38,"Electricity price/GJ",777,-140,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,39,31,38,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,40,Energy carrier price,607,134,57,34,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,41,initial price,604,71,44,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,42,Oil price,138,-37,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,43,Barrel of oil equivalent,158,30,48,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,44,"Oil price/GJ",291,-19,49,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,45,26,44,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,46,42,44,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,47,43,44,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,48,44,41,1,0,0,0,0,192,0,-1--1--1,,1|(409,44)|
+1,49,34,41,1,0,0,0,0,192,0,-1--1--1,,1|(365,-64)|
+1,50,30,41,1,0,0,0,0,192,0,-1--1--1,,1|(593,-59)|
+1,51,38,41,1,0,0,0,0,192,0,-1--1--1,,1|(732,-20)|
+10,52,"Biofuel price/GJ",897,-119,43,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,53,"Efuel price/GJ",1035,-23,57,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,54,28,52,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,55,29,53,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,56,53,41,1,0,0,0,0,192,0,-1--1--1,,1|(848,69)|
+1,57,52,41,1,0,0,0,0,192,0,-1--1--1,,1|(799,-30)|
+10,58,Energy content,1031,-149,37,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,59,58,52,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,60,58,53,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,61,41,40,0,0,0,0,0,192,1,-1--1--1,,1|(0,0)|
+10,62,Renewable fuel premium,864,-13,60,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,63,Fuel multiplier,964,-68,56,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,64,62,52,1,0,0,0,0,192,0,-1--1--1,,1|(893,-56)|
+1,65,63,53,1,0,0,0,0,192,0,-1--1--1,,1|(1003,-67)|
+1,66,62,53,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,67,63,52,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,68,Initial ETS,438,-111,43,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,69,68,34,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,70,68,30,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,71,Initial gas price,615,-244,44,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,72,Initial electricity price,807,-213,47,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,73,71,30,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,74,72,38,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+12,75,48,311,137,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,76,78,75,100,0,0,22,0,192,0,-1--1--1,,1|(376,137)|
+1,77,78,40,4,0,0,22,0,192,0,-1--1--1,,1|(496,137)|
+11,78,0,437,137,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,79,Price change,437,168,55,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,80,ETS cap reduction factor,346,232,42,25,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,81,CO2 price increase,257,237,48,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,82,81,79,1,0,0,0,0,192,0,-1--1--1,,1|(367,218)|
+10,83,Emission factors,342,277,43,18,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,84,83,79,1,0,0,0,0,192,0,-1--1--1,,1|(392,254)|
+1,85,16,20,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+10,86,"Price increase %",464,269,55,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,87,79,86,1,0,0,0,0,192,0,-1--1--1,,1|(440,208)|
+1,88,40,86,1,0,0,0,0,192,0,-1--1--1,,1|(516,230)|
+1,89,86,20,1,0,0,0,0,192,0,-1--1--1,,1|(492,399)|
+1,90,1,20,1,0,0,0,0,192,0,-1--1--1,,1|(705,468)|
+10,91,percentual GDP growth,479,472,57,18,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,92,Market reaction delay,586,602,62,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,93,92,21,1,0,0,0,0,192,0,-1--1--1,,1|(632,565)|
+10,94,Price adaptation delay,286,177,64,23,8,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,95,94,78,1,0,0,0,0,192,0,-1--1--1,,1|(364,152)|
+10,96,Long term price effect,415,86,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,97,Short term price effect,286,84,52,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,98,Long term,839,254,33,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,99,short term,552,393,33,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,100,Short term demand,641,351,50,18,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,101,Long term demand,782,314,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,102,1,101,1,0,0,0,0,128,0,-1--1--1,,1|(794,393)|
+1,103,98,101,1,0,0,0,0,128,0,-1--1--1,,1|(806,264)|
+1,104,1,100,1,0,0,0,0,128,0,-1--1--1,,1|(723,460)|
+1,105,99,100,1,0,0,0,0,128,0,-1--1--1,,1|(618,380)|
+10,106,Short term price development,572,301,52,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,107,Long term price development,647,245,51,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,108,100,106,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,109,1,106,1,0,0,0,0,128,0,-1--1--1,,1|(701,335)|
+1,110,1,107,1,0,0,0,0,128,0,-1--1--1,,1|(765,385)|
+1,111,101,107,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,112,97,78,1,0,0,0,0,128,0,-1--1--1,,1|(366,103)|
+1,113,96,78,1,0,0,0,0,128,0,-1--1--1,,1|(439,116)|
+1,114,106,79,1,0,0,0,0,128,0,-1--1--1,,1|(477,215)|
+1,115,107,79,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,116,40,79,1,0,0,0,0,128,0,-1--1--1,,1|(539,163)|
+1,117,119,1,4,0,0,22,0,0,0,-1--1--1,,3|(843,339)|(843,339)|(843,410)|
+1,118,119,1,100,0,0,22,0,0,0,-1--1--1,,3|(1037,511)|(1037,511)|(958,511)|
+11,119,0,1037,339,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,120,Energy substitution,1037,358,59,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,121,Hydrogen transport demand,1056,791,62,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,122,Hydrogen demand per market,1058,664,64,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,123,122,121,1,0,0,0,0,128,0,-1--1--1,,1|(1047,707)|
+10,124,"Hydrogen ton/PJ",1147,718,54,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,125,124,121,1,0,0,0,0,128,0,-1--1--1,,1|(1121,754)|
+12,126,48,810,752,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,127,129,126,4,0,0,22,0,0,0,-1--1--1,,1|(810,752)|
+1,128,129,1,100,0,0,22,0,0,0,-1--1--1,,1|(810,590)|
+11,129,0,810,646,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,130,Decarbonisation,874,646,56,29,40,131,0,0,-1,0,0,0,0,0,0,0,0,0
+10,131,Conventional transport fuel demand,964,622,58,21,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,132,1,131,1,0,0,0,0,128,0,-1--1--1,,1|(878,590)|
+10,133,Total transport fuel demand,991,882,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,134,131,133,1,0,0,0,0,128,0,-1--1--1,,1|(968,716)|
+1,135,121,133,1,0,0,0,0,128,0,-1--1--1,,1|(1019,853)|
+10,136,Transport fuel demand shares,1103,880,48,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,137,133,136,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,138,Transport cost,1276,951,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,139,Energy carrier price,1385,986,50,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,140,Net Cost,1273,1011,39,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,141,140,138,1,0,0,0,0,128,0,-1--1--1,,1|(1272,990)|
+1,142,139,138,1,0,0,0,0,128,0,-1--1--1,,1|(1357,963)|
+10,143,Transport cost vector,1497,916,55,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,144,136,143,1,0,0,0,0,128,0,-1--1--1,,1|(1338,1062)|
+1,145,138,143,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,146,average transport fuel cost,1419,813,56,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,147,143,146,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,148,Energy content hydrogen,1488,534,53,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,149,"Hydrogen GJ/ton",1359,893,54,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,150,149,138,1,0,0,0,0,128,0,-1--1--1,,1|(1297,918)|
+10,151,Transport fuel substitution rate,1271,792,50,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,152,Transport fuel substitution factor,1228,881,56,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,153,146,152,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,154,151,152,1,0,0,0,0,128,0,-1--1--1,,1|(1248,838)|
+1,155,138,152,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,156,136,152,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,157,Industrial energy demand,1044,559,50,31,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+1,158,1,157,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,159,Hydrogen industry demand,1176,614,59,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,160,122,159,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,161,total industrial energy demand,1193,530,66,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,162,157,161,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,163,159,161,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,164,124,159,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,165,Industrial energy demand shares,1257,439,71,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,166,161,165,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,167,Industrial feedstock cost,1380,581,47,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,168,Net Cost,1377,641,39,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,169,Energy carrier price,1497,661,50,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,170,"Hydrogen GJ/ton",1272,602,37,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,171,169,167,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,172,168,167,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,173,170,167,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,174,Industrial feedstock cost vector,1393,524,62,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,175,167,174,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,176,165,174,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,177,Industrial energy substitution factor,1389,356,77,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,178,Average industrial energy price,1469,458,71,28,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,179,174,178,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,180,Industrial energy substitution rate,1296,253,53,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,181,178,177,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,182,167,177,1,0,0,0,0,128,0,-1--1--1,,1|(1549,487)|
+1,183,165,177,1,0,0,0,0,128,0,-1--1--1,,1|(1315,408)|
+1,184,180,177,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,185,Energy carrier substitution,1153,384,54,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,186,185,120,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,187,177,185,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,188,Transport fuel substitution factor,1131,313,61,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,189,188,185,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,190,1,120,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,191,Substitution delay,1010,262,56,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,192,191,119,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,193,Procured RES,628,735,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,194,"GJ/PJ",739,675,29,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,195,New electricity demand,635,654,59,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,196,"MWh/GJ",698,710,40,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,197,"GJ/PJ",585,612,29,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+12,198,48,550,536,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,199,Average GDP growth,144,525,46,13,8,131,0,0,0,0,0,0,0,0,0,0,0,0
+10,200,GDP,327,576,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,201,48,126,579,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,202,204,200,4,0,0,22,0,0,0,-1--1--1,,1|(249,579)|
+1,203,204,201,100,0,0,22,0,0,0,-1--1--1,,1|(168,579)|
+11,204,0,206,579,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,205,GDP growth,206,598,44,11,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,206,business cycle,304,673,45,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,207,pi,312,634,8,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,208,200,204,1,0,0,0,0,128,0,-1--1--1,,1|(286,546)|
+10,209,growth,211,645,23,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,210,206,209,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,211,207,209,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,212,Time,136,657,26,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,213,212,209,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,214,209,205,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,215,199,204,1,0,0,0,0,128,0,-1--1--1,,1|(191,572)|
+10,216,percentual GDP growth,307,495,52,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,217,204,216,1,0,0,0,0,128,0,-1--1--1,,1|(237,538)|
+1,218,200,216,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+1,219,216,20,1,0,0,0,0,128,0,-1--1--1,,1|(447,468)|
+10,220,Policy market size adjustment,910,752,58,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,221,1,130,1,0,0,0,0,128,0,-1--1--1,,1|(851,591)|
+1,222,220,130,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,223,Efuels demand,511,760,55,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,224,Efficiency increase,682,756,58,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,225,224,129,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,226,Substitution from other energy,654,660,59,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,227,Natural gas demand,384,798,42,19,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,228,Unit conversion,381,342,60,11,8,2,1,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,229,228,86,0,1,0,0,0,128,0,-1--1--1,,1|(0,0)|
+12,230,48,908,135,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,231,233,230,4,0,0,22,0,0,0,-1--1--1,,1|(786,135)|
+1,232,233,40,100,0,0,22,0,0,0,-1--1--1,,1|(722,135)|
+11,233,0,786,135,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,234,Technological development,786,162,44,19,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,235,Innovation factor,960,77,53,11,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,236,40,233,1,0,0,0,0,128,0,-1--1--1,,1|(718,98)|
+1,237,235,233,1,0,0,0,0,128,0,-1--1--1,,1|(860,89)|
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 6
+$192-192-192,0,Times New Roman|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,100,0
+10,1,Initial ICPEI funds,286,130,45,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,2,"SDE++ fund",288,205,50,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,3,Switch combined tendering,280,290,60,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,4,Adaptive policy refineries switch,286,370,56,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,5,Share RES allocated to H2,262,445,54,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,6,MW installed,559,173,52,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,7,LCOH,775,272,33,11,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+10,8,LCOH green hydrogen,548,269,43,19,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,9,7,8,0,0,0,0,0,128,0,-1--1--1,,1|(0,0)|
+10,10,Industrial CO2 savings with green hydrogen,554,376,77,19,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+///---\\\
+:L<%^E!@
+1:0704.vdfx
+4:Time
+5:Energy substitution[Energy types,Hydrogen markets]
+6:Ammonia
+6:Biofuels
+6:Blue hydrogen
+6:Coal
+6:Construction
+6:Efuels
+6:Electricity
+6:Engineering
+6:Financing
+6:Green hydrogen
+6:Grey hydrogen
+6:Methanol
+6:Natural gas
+6:Oil
+6:Permitting
+6:Refineries
+6:Steel
+6:Synthetic fuels
+6:Transport
+9:0704
+19:70,4
+24:2020
+25:2050
+26:2050
+57:1
+54:0
+55:0
+82:0
+86:0
+59:0
+56:1
+58:0
+71:0
+110:0
+111:0
+44:1252
+46:0
+45:5
+49:0
+50:0
+51:1
+52:2
+53:1
+43:test15
+47:test15
+48:
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:0
+72:0
+73:0
+35:Date
+36:YYYY-MM-DD
+37:2020
+38:1
+39:1
+40:0
+41:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:1
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:test15
+103:8,8,8,3,8
+105:0,0,0,0,0,0,0,0,0,0
+104:Times New Roman|12||0-0-0|0-0-0|-1--1--1|0-0-255|192-192-192|-1--1--1
